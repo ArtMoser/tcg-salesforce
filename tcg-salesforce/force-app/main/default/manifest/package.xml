@@ -44,7 +44,12 @@
 		<members>Card__c</members>
 		<members>Deck__c</members>
 		<members>Match__c</members>
+		<members>Game</members>
 		<name>CustomTab</name>
+	</types>
+	<types>
+		<members>TCG</members>
+		<name>CustomApplication</name>
 	</types>
 	<version>60.0</version>
 </Package>
