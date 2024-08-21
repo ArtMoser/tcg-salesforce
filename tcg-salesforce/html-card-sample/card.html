@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Carta de Magic</title>
+    <style>
+        /* styles.css */
+
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background-color: #f0f0f0;
+    margin: 0;
+    font-family: Arial, sans-serif;
+}
+
+.card {
+    width: 300px;
+    border: 1px solid #000;
+    border-radius: 10px;
+    overflow: hidden;
+    background-color: #fff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    font-size: 14px;
+}
+
+.card-header {
+    background-color: #000;
+    color: #fff;
+    padding: 10px;
+    text-align: center;
+}
+
+.card-title {
+    margin: 0;
+}
+
+.card-body {
+    padding: 10px;
+}
+
+.card-description {
+    margin: 0;
+    font-size: 12px;
+}
+
+.card-footer {
+    background-color: #f8f8f8;
+    border-top: 1px solid #ddd;
+    padding: 10px;
+    display: flex;
+    justify-content: space-around;
+    font-size: 12px;
+}
+
+.card-attribute {
+    font-weight: bold;
+}
+
+    </style>
+</head>
+<body>
+    <div class="card">
+        <div class="card-header">
+            <h1 class="card-title">Nome da Carta</h1>
+        </div>
+        <div class="card-body">
+            <p class="card-description">Descrição da carta vai aqui. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla vehicula quam ac urna consequat.</p>
+        </div>
+        <div class="card-footer">
+            <span class="card-attribute">Custo de Mana: {1}{G}</span>
+            <span class="card-attribute">Força: 3</span>
+            <span class="card-attribute">Resistência: 4</span>
+        </div>
+    </div>
+</body>
+</html>
