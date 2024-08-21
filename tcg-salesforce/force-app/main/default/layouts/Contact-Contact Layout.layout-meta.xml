@@ -41,6 +41,10 @@
                 <behavior>Edit</behavior>
                 <field>LeadSource</field>
             </layoutItems>
+            <layoutItems>
+                <behavior>Edit</behavior>
+                <field>SelectedDeck__c</field>
+            </layoutItems>
         </layoutColumns>
         <layoutColumns>
             <layoutItems>
@@ -258,7 +262,7 @@
     </relatedLists>
     <relatedLists>
         <fields>NAME</fields>
-        <relatedList>Match__c.PalyerOne__c</relatedList>
+        <relatedList>Match__c.PlayerOne__c</relatedList>
     </relatedLists>
     <relatedLists>
         <fields>NAME</fields>

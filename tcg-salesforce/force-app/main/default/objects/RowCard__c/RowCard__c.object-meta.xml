@@ -155,8 +155,9 @@
     <externalSharingModel>ControlledByParent</externalSharingModel>
     <label>Row Card</label>
     <nameField>
+        <displayFormat>RC-{00000}</displayFormat>
         <label>Row Card Name</label>
-        <type>Text</type>
+        <type>AutoNumber</type>
     </nameField>
     <pluralLabel>Row Cards</pluralLabel>
     <searchLayouts></searchLayouts>
