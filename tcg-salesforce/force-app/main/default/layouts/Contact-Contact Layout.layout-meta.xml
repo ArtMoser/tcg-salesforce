@@ -45,6 +45,10 @@
                 <behavior>Edit</behavior>
                 <field>SelectedDeck__c</field>
             </layoutItems>
+            <layoutItems>
+                <behavior>Edit</behavior>
+                <field>LoginCode__c</field>
+            </layoutItems>
         </layoutColumns>
         <layoutColumns>
             <layoutItems>

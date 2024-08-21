@@ -180,6 +180,11 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
+        <field>Match__c.Status__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
         <field>Match__c.Turn__c</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -258,4 +263,8 @@
         <object>PlayerCard__c</object>
         <viewAllRecords>true</viewAllRecords>
     </objectPermissions>
+    <tabSettings>
+        <tab>Match__c</tab>
+        <visibility>Visible</visibility>
+    </tabSettings>
 </PermissionSet>
