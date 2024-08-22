@@ -47,4 +47,16 @@ public with sharing class DeckManagementRepository {
                 Player__r.LoginCode__c =: playerLoginCode
         ];
     }
+
+    public List<DeckCard__c> getDeckCardsByPlayerCardsIdAndDeckId(String deckId, List<String> playerCardIds) {
+        return [
+            SELECT
+                Id
+            FROM
+                DeckCard__c
+            WHERE
+                PlayerCard__c IN: playerCardIds AND
+                Deck__c =: deckId
+        ];
+    }
 }

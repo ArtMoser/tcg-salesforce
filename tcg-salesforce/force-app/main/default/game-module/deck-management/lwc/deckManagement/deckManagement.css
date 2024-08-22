@@ -18,11 +18,15 @@
     display: flex;
     flex-wrap: wrap;
     gap: 10px;
+    max-height: 800px;
+    overflow-y: auto;
 }
 
 .right {
     flex: 1;
     background-color: lightcoral;
+    max-height: 800px;
+    overflow-y: auto;
 }
 
 .block {

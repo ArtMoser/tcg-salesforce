@@ -1,4 +1,8 @@
 <template>
+    <div>
+        <lightning-button variant="success" label="Save" title="Successful action" onclick={handleSaveDeckModifications} class="slds-m-left_x-small"></lightning-button>
+        <lightning-button variant="destructive" label="Cancel" title="Destructive action" onclick={handleCancelDeckModifications} class="slds-m-left_x-small"></lightning-button>
+    </div>
     <div class="container">
         <div class="left">
             <template for:each={playerCards} for:item="playerCard">
