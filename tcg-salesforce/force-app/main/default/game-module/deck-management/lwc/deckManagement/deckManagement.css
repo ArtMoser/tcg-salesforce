@@ -12,27 +12,75 @@
     box-sizing: border-box;
 }
 
+.screen-size {
+    max-height: 800px;
+    overflow-y: auto;
+    overflow-y: auto!important;
+    justify-content: center;
+    padding-top: 40px;
+}
+
 .left {
-    flex: 4;
+    flex: 3;
     background-color: lightblue;
     display: flex;
     flex-wrap: wrap;
     gap: 10px;
-    max-height: 800px;
-    overflow-y: auto;
+    
+}
+
+.center {
+    flex: 1;
+    background-color: lightblue;
+    display: flex;
+    flex-wrap: wrap;
+    
+}
+
+.deck-item {
+    margin-bottom: 10px;
+    transition: transform 0.4s ease;
+}
+
+.remove-card-button {
+    position: absolute;
+    margin-top: 200px;
+    width: 100%;
+    text-align: center;
+    opacity: 0;
+    transition: opacity 0.4s ease;
+    font-weight: bold;
+    cursor: pointer;
+    text-transform: uppercase;
+    color: #ff0000f5;
+    font-size: 32px;
+    text-shadow: 2px 0 #fff, -2px 0 #fff, 0 2px #fff, 0 -2px #fff,
+               1px 1px #fff, -1px -1px #fff, 1px -1px #fff, -1px 1px #fff;
+
+}
+
+.deck-item:hover {
+    transform: scale(1.1);
+}
+
+.deck-item:hover .remove-card-button{
+    opacity: 1;
 }
 
 .right {
     flex: 1;
     background-color: lightcoral;
-    max-height: 800px;
-    overflow-y: auto;
 }
 
 .block {
     padding: 5px;
     text-align: center;
     box-sizing: border-box;
+    transition: transform 0.4s ease;
+}
+
+.block:hover {
+    transform: scale(1.1);
 }
 
 .selected-block {

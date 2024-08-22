@@ -3,20 +3,13 @@
         <lightning-button variant="success" label="Save" title="Successful action" onclick={handleSaveDeckModifications} class="slds-m-left_x-small"></lightning-button>
         <lightning-button variant="destructive" label="Cancel" title="Destructive action" onclick={handleCancelDeckModifications} class="slds-m-left_x-small"></lightning-button>
     </div>
-    <div class="container">
-        <div class="left">
+    <div class="container ">
+        <div class="left screen-size">
             <template for:each={playerCards} for:item="playerCard">
                 <template if:true={playerCard.isSelected}>
                     <div key={playerCard.Id} class="block selected-block">
                         <c-card-render
-                            attack={playerCard.Card__r.Attack__c}
-                            defense={playerCard.Card__r.Defense__c}
-                            name={playerCard.Card__r.Name}
-                            description={playerCard.Card__r.Description__c}
-                            image-url={playerCard.Card__r.imageUrl__c}
-                            rarity={playerCard.Card__r.Rarity__c}
-                            type={playerCard.Card__r.Type__c}
-                            energy-cost={playerCard.Card__r.EnergyCost__c}
+                            card-data={playerCard.Card__r}
                             data-id={playerCard.Id}
                             onclick={toggleCardSelection}
                         >
@@ -26,14 +19,7 @@
                 <template if:false={playerCard.isSelected}>
                     <div key={playerCard.Id} class="block">
                         <c-card-render
-                            attack={playerCard.Card__r.Attack__c}
-                            defense={playerCard.Card__r.Defense__c}
-                            name={playerCard.Card__r.Name}
-                            description={playerCard.Card__r.Description__c}
-                            image-url={playerCard.Card__r.imageUrl__c}
-                            rarity={playerCard.Card__r.Rarity__c}
-                            type={playerCard.Card__r.Type__c}
-                            energy-cost={playerCard.Card__r.EnergyCost__c}
+                            card-data={playerCard.Card__r}
                             data-id={playerCard.Id}
                             onclick={toggleCardSelection}
                         >
@@ -42,7 +28,26 @@
                 </template>
             </template>
         </div>
-        <div class="right">
+        <div class="center screen-size">
+            <div class="deck-container">
+                <template for:each={selectedCards} for:item="card">
+                    <div 
+                        class="deck-item"
+                        key={card.Id}>
+                        <div class="remove-card-button" onclick={handleRemoveCardFromDeck}>
+                            <p>Remove</p>
+                        </div>
+                        <c-card-render
+                            card-data={card.Card__r}
+                            data-id={card.Id}
+                            onclick={toggleCardSelection}
+                        >
+                        </c-card-render>
+                    </div>
+                </template>
+            </div>
+        </div>
+        <div class="right screen-size">
             <template for:each={playerDecks} for:item="playerDeck">
                 <div key={playerDeck.Id} class="right-block">
                     <h3>{playerDeck.Name}</h3>
