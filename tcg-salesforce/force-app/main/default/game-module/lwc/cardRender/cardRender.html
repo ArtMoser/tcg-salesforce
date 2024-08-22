@@ -1,0 +1,17 @@
+<template>
+    <div class="card">
+        <div class="card-header">
+            <h1 class="card-title">{name}</h1>
+        </div>
+        <div class="card-body">
+            <p class="card-description">{description}</p>
+        </div>
+        <template if:false={isEnergyCard}>
+            <div class="card-footer">
+                <span class="card-attribute">Energy cost: {energyCost}</span>
+                <span class="card-attribute">Attack: {attack}</span>
+                <span class="card-attribute">Defense: {defense}</span>
+            </div>
+        </template>
+    </div>
+</template>

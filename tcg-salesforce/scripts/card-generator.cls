@@ -45,7 +45,8 @@ List<Card__c> cardsToInsert = new List<Card__c>();
                 Name = descriptionsMonster[i],
                 Description__c = descriptionsMonster[i],
                 Rarity__c = getRandomRarity(),
-                Type__c = 'Monster'
+                Type__c = 'Monster',
+                EnergyCost__c = 3
             ));
         }
 

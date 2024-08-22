@@ -1,0 +1,50 @@
+<template>
+    <div class="container">
+        <div class="left">
+            <template for:each={playerCards} for:item="playerCard">
+                <template if:true={playerCard.isSelected}>
+                    <div key={playerCard.Id} class="block selected-block">
+                        <c-card-render
+                            attack={playerCard.Card__r.Attack__c}
+                            defense={playerCard.Card__r.Defense__c}
+                            name={playerCard.Card__r.Name}
+                            description={playerCard.Card__r.Description__c}
+                            image-url={playerCard.Card__r.imageUrl__c}
+                            rarity={playerCard.Card__r.Rarity__c}
+                            type={playerCard.Card__r.Type__c}
+                            energy-cost={playerCard.Card__r.EnergyCost__c}
+                            data-id={playerCard.Id}
+                            onclick={toggleCardSelection}
+                        >
+                        </c-card-render>
+                    </div>
+                </template>
+                <template if:false={playerCard.isSelected}>
+                    <div key={playerCard.Id} class="block">
+                        <c-card-render
+                            attack={playerCard.Card__r.Attack__c}
+                            defense={playerCard.Card__r.Defense__c}
+                            name={playerCard.Card__r.Name}
+                            description={playerCard.Card__r.Description__c}
+                            image-url={playerCard.Card__r.imageUrl__c}
+                            rarity={playerCard.Card__r.Rarity__c}
+                            type={playerCard.Card__r.Type__c}
+                            energy-cost={playerCard.Card__r.EnergyCost__c}
+                            data-id={playerCard.Id}
+                            onclick={toggleCardSelection}
+                        >
+                        </c-card-render>
+                    </div>
+                </template>
+            </template>
+        </div>
+        <div class="right">
+            <template for:each={playerDecks} for:item="playerDeck">
+                <div key={playerDeck.Id} class="right-block">
+                    <h3>{playerDeck.Name}</h3>
+                    <p>{playerDeck.Name}</p>
+                </div>
+            </template>
+        </div>
+    </div>
+</template>
