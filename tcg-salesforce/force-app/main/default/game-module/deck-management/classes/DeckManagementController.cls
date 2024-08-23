@@ -11,8 +11,11 @@ public with sharing class DeckManagementController {
 
     @AuraEnabled
     public static DeckManagementFactory.DeckManagementResponse updateDeckCards(DeckManagementFactory.PlayerCardsToDeck deckCardsToRemove, DeckManagementFactory.PlayerCardsToDeck deckCardsToAdd) {
-        System.debug('###### deckCardsToRemove => ' + deckCardsToRemove);
-        System.debug('###### deckCardsToAdd => ' + deckCardsToAdd);
         return DeckManagementService.getInstance().updateDeckCards(deckCardsToRemove, deckCardsToAdd);
+    }
+
+    @AuraEnabled
+    public static DeckManagementFactory.DeckManagementResponse generateNewDeck(String playerLoginCode) {
+        return DeckManagementService.getInstance().createNewPlayerDeck(playerLoginCode);
     }
 }

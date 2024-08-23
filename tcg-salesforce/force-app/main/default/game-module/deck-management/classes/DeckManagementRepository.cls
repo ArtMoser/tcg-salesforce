@@ -59,4 +59,27 @@ public with sharing class DeckManagementRepository {
                 Deck__c =: deckId
         ];
     }
+
+    public Contact getContactWithDecks(String playerLoginCode) {
+        List<Contact> players = [
+                                SELECT
+                                    Id,
+                                    Name,
+                                    LoginCode__c,
+                                    (
+                                        SELECT
+                                            Id,
+                                            Player__c
+                                        FROM
+                                            Decks__r
+                                    )
+                                FROM
+                                    Contact
+                                WHERE
+                                    LoginCode__c =: playerLoginCode
+                            ];
+        if(players.isEmpty()) { return null; }
+
+        return players.get(0);
+    }
 }

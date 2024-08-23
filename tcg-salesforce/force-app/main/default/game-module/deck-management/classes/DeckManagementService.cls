@@ -20,11 +20,24 @@ public with sharing class DeckManagementService {
         DeckManagementFactory.DeckManagementResponse response = new DeckManagementFactory.DeckManagementResponse();
 
         try {
-            //DeckManagementFactory.PlayerCardsToDeck deckCardsToRemove = (DeckManagementFactory.PlayerCardsToDeck) JSON.deserialize(deckCardsToRemoveJSON, DeckManagementFactory.PlayerCardsToDeck.class);
-            //DeckManagementFactory.PlayerCardsToDeck deckCardsToAdd = (DeckManagementFactory.PlayerCardsToDeck) JSON.deserialize(deckCardsToAddJSON, DeckManagementFactory.PlayerCardsToDeck.class);
             this.deckManagement.removeCardsFromDeck(deckCardsToRemove);
             this.deckManagement.addCardsToDeck(deckCardsToAdd);
         } catch(Exception error) {
+            response.success = false;
+        }
+
+        return response;
+    }
+
+    public DeckManagementFactory.DeckManagementResponse createNewPlayerDeck(String playerLoginCode) {
+        DeckManagementFactory.DeckManagementResponse response = new DeckManagementFactory.DeckManagementResponse();
+
+        try {
+            Contact player = this.repository.getContactWithDecks(playerLoginCode);
+            Deck__c generatedDeck = this.deckManagement.generateDeck(player);
+            
+            response.recordId = generatedDeck.Id;
+        } catch (Exception error) {
             response.success = false;
         }
 

@@ -3,6 +3,7 @@ import { LightningElement, track, api } from 'lwc';
 import getPlayerCards from '@salesforce/apex/DeckManagementController.getPlayerCards';
 import getPlayerDecks from '@salesforce/apex/DeckManagementController.getPlayerDecks';
 import updateDeckCards from '@salesforce/apex/DeckManagementController.updateDeckCards';
+import generateNewDeck from '@salesforce/apex/DeckManagementController.generateNewDeck';
 
 export default class DeckManagement extends LightningElement {
     @api playerLoginCode;
@@ -11,20 +12,23 @@ export default class DeckManagement extends LightningElement {
     @track removedDeckCards = [];
     @track currentDeck = {};
     @track selectedCards = [];
+    @track isLoading = false;
 
     connectedCallback() {
-        this.initDeckManagement();
+        this.initDeckManagement(null);
     }
 
-    async initDeckManagement() {
+    async initDeckManagement(currentDeckId) {
+        this.toggleLoading();
         try {
             this.playerCards = await getPlayerCards({playerLoginCode: this.playerLoginCode});
             this.playerDecks = await getPlayerDecks({playerLoginCode: this.playerLoginCode});
-            this.setCurrentDeck(null);
+            this.setCurrentDeck(currentDeckId);
             this.addSelectedCards();
         } catch (error) {
             console.error('Error fetching data:', error);
         }
+        this.toggleLoading();
     }
 
     setCurrentDeck(deckSelectedId) {
@@ -97,6 +101,7 @@ export default class DeckManagement extends LightningElement {
 
         for(let playerDeck of this.playerDecks) {
             if(playerDeck.Id != deckId) { continue; }
+            if(!playerDeck.DeckCards__r) { break; }
 
             for(let deckCard of playerDeck.DeckCards__r) {
                 deckCardsMapById[deckCard.PlayerCard__c] = deckCard.PlayerCard__c;
@@ -121,7 +126,7 @@ export default class DeckManagement extends LightningElement {
     }
 
     toggleCardSelection(event) {
-        const selectedPlayerCardId = event.target.getAttribute('data-id');
+        const selectedPlayerCardId = event.currentTarget.dataset.id;
 
         let localPlayerCards = [...this.playerCards];
 
@@ -155,7 +160,7 @@ export default class DeckManagement extends LightningElement {
                         deckCardsToAdd : deckCardsToAdd 
                     })
         .then(response => {
-            this.initDeckManagement();
+            this.initDeckManagement(this.currentDeck.Id);
         })
         .catch(error => {
             console.log(error)
@@ -200,6 +205,27 @@ export default class DeckManagement extends LightningElement {
     }
 
     handleCancelDeckModifications() {
-        this.initDeckManagement();
+        this.initDeckManagement(this.currentDeck.Id);
+    }
+
+    handleGenerateNewDeck() {
+        generateNewDeck({playerLoginCode: this.playerLoginCode})
+        .then(response => {
+            this.initDeckManagement(response.recordId);
+        })
+        .catch(error => {
+            console.log(error)
+        });
+    }
+
+    handleSelectDeck(event) {
+        const deckId = event.currentTarget.dataset.id;
+        console.log(deckId);
+        this.unselectAllDecks(this.playerDecks);
+        this.initDeckManagement(deckId);
+    }
+
+    toggleLoading() {
+        this.isLoading = !this.isLoading;
     }
 }

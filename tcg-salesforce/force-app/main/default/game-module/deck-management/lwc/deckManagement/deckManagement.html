@@ -1,4 +1,7 @@
 <template>
+    <template if:true={isLoading}>
+        <lightning-spinner alternative-text="Loading" size="large"></lightning-spinner>
+    </template>
     <div>
         <lightning-button variant="success" label="Save" title="Successful action" onclick={handleSaveDeckModifications} class="slds-m-left_x-small"></lightning-button>
         <lightning-button variant="destructive" label="Cancel" title="Destructive action" onclick={handleCancelDeckModifications} class="slds-m-left_x-small"></lightning-button>
@@ -49,11 +52,30 @@
         </div>
         <div class="right screen-size">
             <template for:each={playerDecks} for:item="playerDeck">
-                <div key={playerDeck.Id} class="right-block">
-                    <h3>{playerDeck.Name}</h3>
-                    <p>{playerDeck.Name}</p>
-                </div>
+                <template if:false={playerDeck.isSelected}>
+                    <div 
+                        key={playerDeck.Id} 
+                        class="right-block"
+                        data-id={playerDeck.Id}
+                        onclick={handleSelectDeck}>
+                        <h3>{playerDeck.Name}</h3>
+                    </div>
+                </template>
+                <template if:true={playerDeck.isSelected}>
+                    <div 
+                        key={playerDeck.Id} 
+                        class="selected-deck right-block"
+                        data-id={playerDeck.Id}
+                        onclick={handleSelectDeck}>
+                        <h3>{playerDeck.Name}</h3>
+                    </div>
+                </template>
             </template>
+            <div
+                onclick={handleGenerateNewDeck} 
+                class="right-block">
+                <h3>New Deck (+)</h3>
+            </div>
         </div>
     </div>
 </template>
