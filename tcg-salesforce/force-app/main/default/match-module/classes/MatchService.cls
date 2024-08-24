@@ -74,6 +74,7 @@ public with sharing class MatchService {
         Set<Id> playersIds = new Set<Id>();
 
         for(Match__c matchRecord : newMatches) {
+            if(matchRecord.Status__c != 'Finished') { continue; }
             playersIds.add(matchRecord.PlayerOne__c);
             playersIds.add(matchRecord.PlayerTwo__c);
         }
