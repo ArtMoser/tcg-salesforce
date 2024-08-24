@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>MatchPlayerHand__c</fullName>
+    <externalId>false</externalId>
+    <label>Match Player Hand</label>
+    <referenceTo>Match__c</referenceTo>
+    <relationshipLabel>Player Hands</relationshipLabel>
+    <relationshipName>PlayerHands</relationshipName>
+    <relationshipOrder>0</relationshipOrder>
+    <reparentableMasterDetail>false</reparentableMasterDetail>
+    <trackTrending>false</trackTrending>
+    <type>MasterDetail</type>
+    <writeRequiresMasterRead>false</writeRequiresMasterRead>
+</CustomField>

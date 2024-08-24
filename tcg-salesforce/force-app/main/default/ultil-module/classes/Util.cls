@@ -12,4 +12,16 @@ public with sharing class Util {
 
         return recordValue != oldRecordValue && recordValue != null && oldRecordValue != null;
     }
+
+    public Integer getRandomPlayerByNumber() {
+        Double randomValue = Math.random();
+
+        Integer randomNumber = Math.round(randomValue * 2);
+
+        if (randomNumber == 0) {
+            randomNumber = 1;
+        }
+
+        return randomNumber;
+    }
 }

@@ -1,15 +1,15 @@
 public with sharing class DeckManagementService {
     DeckManagement deckManagement = new DeckManagement(); 
     DeckManagementRepository repository = new DeckManagementRepository();
+    UtilRepository UtilRepository = new UtilRepository();
 
     private static final DeckManagementService deckManagementServiceInstance = new DeckManagementService();
-
     public static DeckManagementService getInstance() {
         return deckManagementServiceInstance;
     }
 
     public Contact getPlayer(String playerLoginCode) {
-        return repository.getContactWithDecks(playerLoginCode);
+        return this.utilRepository.getContactWithDecks(playerLoginCode);
     }
 
     public List<PlayerCard__c> getPlayerCards(String playerLoginCode) {
@@ -37,7 +37,7 @@ public with sharing class DeckManagementService {
         DeckManagementFactory.DeckManagementResponse response = new DeckManagementFactory.DeckManagementResponse();
 
         try {
-            Contact player = this.repository.getContactWithDecks(playerLoginCode);
+            Contact player = this.UtilRepository.getContactWithDecks(playerLoginCode);
             Deck__c generatedDeck = this.deckManagement.generateDeck(player);
             
             response.recordId = generatedDeck.Id;
@@ -49,7 +49,7 @@ public with sharing class DeckManagementService {
     }
 
     public void setPlayerSelectedDeck(String playerLoginCode, String deckId) {
-        Contact player = this.repository.getContactWithDecks(playerLoginCode);
+        Contact player = this.UtilRepository.getContactWithDecks(playerLoginCode);
         this.DeckManagement.setPlayerSelectedDeck(player, deckId);
     }
 }

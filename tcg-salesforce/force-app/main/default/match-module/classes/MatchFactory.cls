@@ -92,6 +92,15 @@ public with sharing class MatchFactory {
         return rowConfigurationByRowCategory;
     }
 
+    public PlayerHand__c generatePlayerhandCard(Id deckCardId, Id matchId, Id playerId) {
+        PlayerHand__c playerHand = new PlayerHand__c();
+        playerHand.ContactPlayerHand__c = playerId;
+        playerHand.DeckCard__c = deckCardId;
+        playerHand.MatchPlayerHand__c = matchId;
+
+        return playerHand;
+    }
+
     public class PlayerMatch {
         public PlayerMatch(Id matchId, Id playerId) {
             this.matchId = matchId;
