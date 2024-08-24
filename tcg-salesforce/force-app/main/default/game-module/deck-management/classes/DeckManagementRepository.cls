@@ -12,6 +12,7 @@ public with sharing class DeckManagementRepository {
                 Card__r.Rarity__c,
                 Card__r.Type__c,
                 Card__r.EnergyCost__c,
+                Card__r.RarityColor__c,
                 Player__c
             FROM
                 PlayerCard__c
@@ -37,7 +38,8 @@ public with sharing class DeckManagementRepository {
                         PlayerCard__r.Card__r.Image__c,
                         PlayerCard__r.Card__r.Rarity__c,
                         PlayerCard__r.Card__r.Type__c,
-                        PlayerCard__r.Card__r.EnergyCost__c
+                        PlayerCard__r.Card__r.EnergyCost__c,
+                        PlayerCard__r.Card__r.RarityColor__c
                     FROM
                         DeckCards__r
                 )
@@ -65,6 +67,7 @@ public with sharing class DeckManagementRepository {
                                 SELECT
                                     Id,
                                     Name,
+                                    SelectedDeck__c,
                                     LoginCode__c,
                                     (
                                         SELECT

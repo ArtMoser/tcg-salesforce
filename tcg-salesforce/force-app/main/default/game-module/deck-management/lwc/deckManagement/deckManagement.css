@@ -42,8 +42,6 @@
 }
 
 .remove-card-button {
-    position: absolute;
-    margin-top: 200px;
     width: 100%;
     text-align: center;
     opacity: 0;

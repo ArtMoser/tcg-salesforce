@@ -27,4 +27,9 @@ public with sharing class DeckManagement {
 
         return generatedDeck;
     }
+
+    public void setPlayerSelectedDeck(Contact player, String deckId) {
+        player.SelectedDeck__c = deckId;
+        update player;
+    }
 }

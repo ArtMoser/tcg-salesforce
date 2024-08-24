@@ -8,6 +8,10 @@ public with sharing class DeckManagementService {
         return deckManagementServiceInstance;
     }
 
+    public Contact getPlayer(String playerLoginCode) {
+        return repository.getContactWithDecks(playerLoginCode);
+    }
+
     public List<PlayerCard__c> getPlayerCards(String playerLoginCode) {
         return repository.getPlayerCardsByPlayerLoginCode(playerLoginCode);
     }
@@ -42,5 +46,10 @@ public with sharing class DeckManagementService {
         }
 
         return response;
+    }
+
+    public void setPlayerSelectedDeck(String playerLoginCode, String deckId) {
+        Contact player = this.repository.getContactWithDecks(playerLoginCode);
+        this.DeckManagement.setPlayerSelectedDeck(player, deckId);
     }
 }

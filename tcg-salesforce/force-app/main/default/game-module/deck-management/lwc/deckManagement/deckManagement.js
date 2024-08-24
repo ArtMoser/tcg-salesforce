@@ -4,6 +4,8 @@ import getPlayerCards from '@salesforce/apex/DeckManagementController.getPlayerC
 import getPlayerDecks from '@salesforce/apex/DeckManagementController.getPlayerDecks';
 import updateDeckCards from '@salesforce/apex/DeckManagementController.updateDeckCards';
 import generateNewDeck from '@salesforce/apex/DeckManagementController.generateNewDeck';
+import setPlayerSelectedDeck from '@salesforce/apex/DeckManagementController.setPlayerSelectedDeck';
+import getPlayer from '@salesforce/apex/DeckManagementController.getPlayer';
 
 export default class DeckManagement extends LightningElement {
     @api playerLoginCode;
@@ -23,7 +25,15 @@ export default class DeckManagement extends LightningElement {
         try {
             this.playerCards = await getPlayerCards({playerLoginCode: this.playerLoginCode});
             this.playerDecks = await getPlayerDecks({playerLoginCode: this.playerLoginCode});
-            this.setCurrentDeck(currentDeckId);
+            this.player = await getPlayer({playerLoginCode: this.playerLoginCode});
+
+            let deckId = this.player.SelectedDeck__c ? this.player.SelectedDeck__c : null;
+
+            if(currentDeckId != null) {
+                deckId = currentDeckId;
+            }
+
+            this.setCurrentDeck(deckId);
             this.addSelectedCards();
         } catch (error) {
             console.error('Error fetching data:', error);
@@ -218,11 +228,22 @@ export default class DeckManagement extends LightningElement {
         });
     }
 
+    updatePlayerSelectedDeck(deckId) {
+        setPlayerSelectedDeck({playerLoginCode: this.playerLoginCode, deckId: deckId})
+        .then(response => {
+            console.log(response);
+        })
+        .catch(error => {
+            console.log(error)
+        });
+    }
+
     handleSelectDeck(event) {
         const deckId = event.currentTarget.dataset.id;
         console.log(deckId);
         this.unselectAllDecks(this.playerDecks);
         this.initDeckManagement(deckId);
+        this.updatePlayerSelectedDeck(deckId);
     }
 
     toggleLoading() {

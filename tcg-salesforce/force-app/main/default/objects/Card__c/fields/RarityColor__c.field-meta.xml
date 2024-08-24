@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>RarityColor__c</fullName>
+    <externalId>false</externalId>
+    <formula>IF(
+    TEXT(Rarity__c) = &apos;Uncommon&apos;,
+    &apos;#3801067d&apos;,
+    IF(
+        TEXT(Rarity__c) = &apos;Rare&apos;,
+        &apos;#70267182&apos;,
+        IF(
+            TEXT(Rarity__c) = &apos;Ultra Rare&apos;,
+            &apos;#0103387d&apos;,
+            IF(
+                TEXT(Rarity__c) = &apos;Special&apos;,
+                &apos;#03e8ff7a&apos;,
+                &apos;#26714A&apos;    
+            )   
+        )
+    )
+)</formula>
+    <label>Rarity color</label>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

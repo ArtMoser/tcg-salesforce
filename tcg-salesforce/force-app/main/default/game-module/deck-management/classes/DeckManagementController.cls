@@ -1,5 +1,10 @@
 public with sharing class DeckManagementController {
     @AuraEnabled
+    public static Contact getPlayer(String playerLoginCode) {
+        return DeckManagementService.getInstance().getPlayer(playerLoginCode);
+    }
+
+    @AuraEnabled
     public static List<PlayerCard__c> getPlayerCards(String playerLoginCode) {
         return DeckManagementService.getInstance().getPlayerCards(playerLoginCode);
     }
@@ -17,5 +22,10 @@ public with sharing class DeckManagementController {
     @AuraEnabled
     public static DeckManagementFactory.DeckManagementResponse generateNewDeck(String playerLoginCode) {
         return DeckManagementService.getInstance().createNewPlayerDeck(playerLoginCode);
+    }
+
+    @AuraEnabled
+    public static void setPlayerSelectedDeck(String playerLoginCode, String deckId) {
+        DeckManagementService.getInstance().setPlayerSelectedDeck(playerLoginCode, deckId);
     }
 }
