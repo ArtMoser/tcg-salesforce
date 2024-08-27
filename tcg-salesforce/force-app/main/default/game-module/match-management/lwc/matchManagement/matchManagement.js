@@ -118,7 +118,8 @@ export default class MatchManagement extends LightningElement {
 
     processChangeEvent(changeEvent) {
         try {
-            this.drawPlayerCards();
+            //TODO: Implement event changes
+            //this.drawPlayerCards();
         } catch (err) {
             console.error(err);
         }
