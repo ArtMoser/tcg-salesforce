@@ -2,7 +2,9 @@
     <div class="background">
         <lightning-tabset>
             <lightning-tab label="Play">
-                Play Content!
+                <c-match-management
+                    player-login-code={playerLoginCode}
+                ></c-match-management>
             </lightning-tab>
             <lightning-tab label="Deck Management">
                 <c-deck-management

@@ -5,7 +5,22 @@ public with sharing class MatchManagementController {
     }
 
     @AuraEnabled
-    public static Deck__c getPlayerDeck(String deckId) {
-        return MatchManagementService.getInstance().getPlayerDeck(deckId);
+    public static List<DeckCard__c> getPlayerAvailableDeckCards(String playerLoginCode, String matchId) {
+        return MatchManagementService.getInstance().getPlayerAvailableDeckCards(playerLoginCode, matchId);
+    }
+
+    @AuraEnabled
+    public static Match__c getCurrentMatch(String playerLoginCode) {
+        return MatchManagementService.getInstance().getCurrentMatch(playerLoginCode);
+    }
+
+    @AuraEnabled
+    public static List<PlayerHand__c> getPlayersHands(String playerLoginCode, String matchId) {
+        return MatchManagementService.getInstance().getPlayersHands(playerLoginCode, matchId);
+    }
+
+    @AuraEnabled
+    public static void savePlayerHand(List<PlayerHand__c> playerHands) {
+        MatchManagementService.getInstance().savePlayerHand(playerHands);
     }
 }
