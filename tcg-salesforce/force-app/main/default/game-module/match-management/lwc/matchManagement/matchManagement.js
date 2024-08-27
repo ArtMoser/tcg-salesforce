@@ -37,6 +37,7 @@ export default class MatchManagement extends LightningElement {
         this.playersHands = await getPlayersHands({playerLoginCode : this.playerLoginCode, matchId : this.match.Id});
         //TODO: Get all battlefield rows
         //TODO: Get Cemetery
+        //TODO: Implement a logic to identify turn change
         //Set if is the playerTurn
         this.setCanPlay();
     }
