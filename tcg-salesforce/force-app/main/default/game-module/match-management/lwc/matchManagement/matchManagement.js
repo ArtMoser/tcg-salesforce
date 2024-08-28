@@ -6,12 +6,16 @@ import getCurrentMatch from '@salesforce/apex/MatchManagementController.getCurre
 import getPlayerAvailableDeckCards from '@salesforce/apex/MatchManagementController.getCurrentMatch';
 import savePlayerHand from '@salesforce/apex/MatchManagementController.savePlayerHand';
 import getPlayersHands from '@salesforce/apex/MatchManagementController.getPlayersHands';
+import getAllRowCards from '@salesforce/apex/MatchManagementController.getAllRowCards';
+import getAllCemeteryCards from '@salesforce/apex/MatchManagementController.getAllCemeteryCards';
 
 export default class MatchManagement extends LightningElement {
     @api playerLoginCode = '123';
     @track player = {};
     @track match = {};
     @track playerDeckCards = [];
+    @track cardRows = [];
+    @track matchCemetery = [];
     @track subscription = {};
     @track playersHands = [];
     @track canPlay = false;
@@ -35,17 +39,20 @@ export default class MatchManagement extends LightningElement {
         this.playerDeckCards = await getPlayerAvailableDeckCards({playerLoginCode : this.playerLoginCode, matchId : this.match.Id});
         //Get both player hands
         this.playersHands = await getPlayersHands({playerLoginCode : this.playerLoginCode, matchId : this.match.Id});
-        //TODO: Get all battlefield rows
-        //TODO: Get Cemetery
+        //Get all Card Rows
+        this.cardRows = await getAllRowCards({matchId : this.match.Id});
+        //Get Cemetery
+        this.matchCemetery = await getAllCemeteryCards({matchId : this.match.Id});
         //TODO: Implement a logic to identify turn change
-        //Set if is the playerTurn
         this.setCanPlay();
     }
 
     setCanPlay() {
         let firstPlayerToPlay = this.identifyPlayer();
 
-        if(firstPlayerToPlay && this.match.Turn__c == 0 || !firstPlayerToPlay && this.identfyTurnIsOdd()) {
+        if(firstPlayerToPlay && this.match.Turn__c == 0 || 
+            (firstPlayerToPlay && this.match.Turn__c > 0 && !this.identfyTurnIsOdd()) || 
+            !firstPlayerToPlay && this.identfyTurnIsOdd()) {
             this.canPlay = true;
         }
     }

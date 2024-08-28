@@ -23,4 +23,14 @@ public with sharing class MatchManagementController {
     public static void savePlayerHand(List<PlayerHand__c> playerHands) {
         MatchManagementService.getInstance().savePlayerHand(playerHands);
     }
+
+    @AuraEnabled
+    public static List<RowCard__c> getAllRowCards(String matchId) {
+        return MatchManagementService.getInstance().getAllRowCards(matchId);
+    }
+
+    @AuraEnabled
+    public static List<MatchCemetery__c> getAllCemeteryCards(String matchId) {
+        return MatchManagementService.getInstance().getAllCemeteryCards(matchId);
+    }
 }

@@ -152,4 +152,50 @@ public with sharing class MatchManagementRepository {
                 MatchPlayerHand__c =: matchId
         ];
     }
+
+    public List<RowCard__c> getAllRowCards(String matchId) {
+        return [
+            SELECT
+                Id,
+                BattlefieldRow__r.Match__c, 
+                BattlefieldRow__r.Category__c,
+                Deckcard__c,
+                Deckcard__r.PlayerCard__r.Player__r.LoginCode__c, 
+                Deckcard__r.PlayerCard__r.Card__r.Attack__c,
+                Deckcard__r.PlayerCard__r.Card__r.Defense__c,
+                Deckcard__r.PlayerCard__r.Card__r.Description__c,
+                Deckcard__r.PlayerCard__r.Card__r.Image__c,
+                Deckcard__r.PlayerCard__r.Card__r.Rarity__c,
+                Deckcard__r.PlayerCard__r.Card__r.Type__c,
+                Deckcard__r.PlayerCard__r.Card__r.EnergyCost__c,
+                Deckcard__r.PlayerCard__r.Card__r.RarityColor__c
+            FROM
+                RowCard__c
+            WHERE 
+                BattlefieldRow__r.Match__c =: matchId
+        ];
+    }
+
+    public List<MatchCemetery__c> getAllCemeteryCards(String matchId) {
+        return [
+            SELECT
+                Id,
+                PlayerCemetery__r.LoginCode__c,
+                MatchCemetery__c, 
+                Deckcard__c,
+                Deckcard__r.PlayerCard__r.Player__r.LoginCode__c, 
+                Deckcard__r.PlayerCard__r.Card__r.Attack__c,
+                Deckcard__r.PlayerCard__r.Card__r.Defense__c,
+                Deckcard__r.PlayerCard__r.Card__r.Description__c,
+                Deckcard__r.PlayerCard__r.Card__r.Image__c,
+                Deckcard__r.PlayerCard__r.Card__r.Rarity__c,
+                Deckcard__r.PlayerCard__r.Card__r.Type__c,
+                Deckcard__r.PlayerCard__r.Card__r.EnergyCost__c,
+                Deckcard__r.PlayerCard__r.Card__r.RarityColor__c
+            FROM
+                MatchCemetery__c
+            WHERE 
+                MatchCemetery__c =: matchId
+        ];
+    }
 }

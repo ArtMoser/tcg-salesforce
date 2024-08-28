@@ -54,4 +54,12 @@ public with sharing class MatchManagementService {
         Match__c match = this.repository.getMatchById(matchId);
         this.matchManagement.updateMatch(match);
     }
+
+    public List<RowCard__c> getAllRowCards(String matchId) {
+        return this.repository.getAllRowCards(matchId);
+    }
+
+    public List<MatchCemetery__c> getAllCemeteryCards(String matchId) {
+        return this.repository.getAllCemeteryCards(matchId);
+    }
 }
