@@ -16,7 +16,7 @@ public with sharing class MatchFactory {
             }
 
             if(this.util.isChangedAndIsNotNull(match, oldMatch, 'PlayerTwo__c')) {
-                playersPerMatch.add(new PlayerMatch(match.Id, match.PlayerOne__c));
+                playersPerMatch.add(new PlayerMatch(match.Id, match.PlayerTwo__c));
             }
         }
 

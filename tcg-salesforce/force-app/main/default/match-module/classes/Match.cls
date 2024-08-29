@@ -6,11 +6,13 @@ public with sharing class Match {
         return this.factory.generatePlayersPerMatch(matches, oldMatches);
     }
 
-    public List<BattlefieldRow__c> generateBattlefieldRows(List<MatchFactory.PlayerMatch> playersPerMatch) {
+    public List<BattlefieldRow__c> generateBattlefieldRows(List<MatchFactory.PlayerMatch> playersPerMatch, Set<Id> matchesIds) {
         List<BattlefieldRow__c> battleFieldRowsGenerated = new List<BattlefieldRow__c>();
-
+        
         for(MatchFactory.PlayerMatch playerPerMatch : playersPerMatch) {
-            battleFieldRowsGenerated.addAll(this.factory.generateBattlefieldRows(playerPerMatch));
+            if(!matchesIds.contains(playerPerMatch.playerId)) {
+                battleFieldRowsGenerated.addAll(this.factory.generateBattlefieldRows(playerPerMatch));
+            }
         }
 
         return battleFieldRowsGenerated;

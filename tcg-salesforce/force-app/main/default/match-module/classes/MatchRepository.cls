@@ -78,4 +78,26 @@ public with sharing class MatchRepository {
                 Used__c = true
         ];
     }
+
+    public Set<String> getBattleFieldRowsPerPlayerAndMatch(Set<Id> matchesId) {
+        //Map<String, List<BattlefieldRow__c>> battleFieldRowsPerPlayerAndMatch = new Map<String, List<BattlefieldRow__c>>();
+        Set<String> idsPlayerAndMatch = new  Set<String>();
+        
+        List<BattlefieldRow__c> battlefieldRows = [
+                                                    SELECT
+                                                        Id,
+                                                        Player__c,
+                                                        Match__c
+                                                    FROM
+                                                        BattlefieldRow__c
+                                                    WHERE
+                                                        Match__c IN: matchesId
+        ];
+
+        for(BattlefieldRow__c battlefieldRow : battlefieldRows){
+            idsPlayerAndMatch.add(battlefieldRow.Player__c + '' + battlefieldRow.Match__c);
+        }
+
+        return idsPlayerAndMatch;
+    }
 }

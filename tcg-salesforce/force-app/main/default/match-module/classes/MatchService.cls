@@ -4,9 +4,16 @@ public with sharing class MatchService {
     Util util = new Util();
 
     public void generateMatchRows(List<Match__c> newMatches, Map<Id, Match__c> oldMatches) {
+        Set<Id> matchesIds = new Set<Id>();
+
+        for(Match__c match : newMatches) {
+            matchesIds.add(match.Id);
+        }
+
+        Set<String> idsPlayerAndMatch = this.repository.getBattleFieldRowsPerPlayerAndMatch(matchesIds);
 
         List<MatchFactory.PlayerMatch> playersPerMatch = this.match.getPlayersPerMatch(newMatches, oldMatches);
-        List<BattlefieldRow__c> battlefieldRows = this.match.generateBattlefieldRows(playersPerMatch);
+        List<BattlefieldRow__c> battlefieldRows = this.match.generateBattlefieldRows(playersPerMatch, matchesIds);
         insert battlefieldRows;
 
         List<RowCard__c> rowCards = this.match.generateRowCards(battlefieldRows);

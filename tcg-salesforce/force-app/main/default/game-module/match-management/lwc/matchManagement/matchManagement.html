@@ -1,3 +1,107 @@
 <template>
-    
+    <div class="container">
+        <div class="board">
+            <div class="play-area">
+                <div class="hand-zone">
+                    <div class="hand hand-enemy">
+                        <template for:each={enemyPlayerHand} for:item="enemyPlayerCard">
+                            <c-card-render
+                                key={enemyPlayerCard.Id}
+                                card-data={enemyPlayerCard.DeckCard__r.PlayerCard__r.Card__r}
+                                hide-card={hideEnemyCards}
+                                data-id={enemyPlayerCard.DeckCard__c}
+                                class="enemy-card-size"
+                            >
+                            </c-card-render>
+                        </template>
+                    </div>
+                    <div class="battlefield">
+                        <div class="line">
+                            <template for:each={enemyPlayerRowCards} for:item="enemyCardRowEffect">
+                                <template if:true={enemyCardRowEffect.isEnergy}>
+                                    <template if:true={enemyCardRowEffect.hasCard}>
+                                        <c-card-render
+                                            key={enemyCardRowEffect.Id}
+                                            card-data={enemyCardRowEffect.Deckcard__r.PlayerCard__r.Card__r}
+                                            data-id={enemyCardRowEffect.DeckCard__c}
+                                            class="card-size enemy-card"
+                                        >
+                                        </c-card-render>
+                                    </template>
+                                    <template if:false={enemyCardRowEffect.hasCard}>
+                                        <div key={enemyCardRowEffect.Id} class="card-battlefield-position"></div>
+                                    </template>
+                                </template>
+                            </template>
+                        </div>
+                        <div class="line">
+                            <template for:each={enemyPlayerRowCards} for:item="enemyCardRowCreature">
+                                <template if:false={enemyCardRowCreature.isEnergy}>
+                                    <template if:true={enemyCardRowCreature.hasCard}>
+                                        <c-card-render
+                                            key={enemyCardRowCreature.Id}
+                                            card-data={enemyCardRowCreature.Deckcard__r.PlayerCard__r.Card__r}
+                                            data-id={enemyCardRowCreature.DeckCard__c}
+                                            class="card-size enemy-card"
+                                        >
+                                        </c-card-render>
+                                    </template>
+                                    <template if:false={enemyCardRowCreature.hasCard}>
+                                        <div key={enemyCardRowCreature.Id} class="card-battlefield-position"></div>
+                                    </template>
+                                </template>
+                            </template>
+                        </div>
+                        <div class="line">
+                            <template for:each={actualPlayerRowCards} for:item="cardRowCreature">
+                                <template if:false={cardRowCreature.isEnergy}>
+                                    <template if:true={cardRowCreature.hasCard}>
+                                        <c-card-render
+                                            key={cardRowCreature.Id}
+                                            card-data={cardRowCreature.Deckcard__r.PlayerCard__r.Card__r}
+                                            data-id={cardRowCreature.DeckCard__c}
+                                            class="card-size"
+                                        >
+                                        </c-card-render>
+                                    </template>
+                                    <template if:false={cardRowCreature.hasCard}>
+                                        <div key={cardRowCreature.Id} class="card-battlefield-position"></div>
+                                    </template>
+                                </template>
+                            </template>
+                        </div>
+                        <div class="line">
+                            <template for:each={actualPlayerRowCards} for:item="cardRowEffect">
+                                <template if:true={cardRowEffect.isEnergy}>
+                                    <template if:true={cardRowEffect.hasCard}>
+                                        <c-card-render
+                                            key={cardRowEffect.Id}
+                                            card-data={cardRowEffect.Deckcard__r.PlayerCard__r.Card__r}
+                                            data-id={cardRowEffect.DeckCard__c}
+                                            class="card-size"
+                                        >
+                                        </c-card-render>
+                                    </template>
+                                    <template if:false={cardRowEffect.hasCard}>
+                                        <div key={cardRowEffect.Id} class="card-battlefield-position"></div>
+                                    </template>
+                                </template>
+                            </template>
+                        </div>
+                    </div>
+                    <div class="hand hand-player">
+                        <template for:each={actualPlayerHand} for:item="playerCard">
+                            <c-card-render
+                                key={playerCard.Id}
+                                card-data={playerCard.DeckCard__r.PlayerCard__r.Card__r}
+                                data-id={playerCard.DeckCard__c}
+                                class="card-size"
+                            >
+                            </c-card-render>
+                        </template>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </template>

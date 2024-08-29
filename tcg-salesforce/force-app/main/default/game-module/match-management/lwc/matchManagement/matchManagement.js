@@ -14,11 +14,17 @@ export default class MatchManagement extends LightningElement {
     @track player = {};
     @track match = {};
     @track playerDeckCards = [];
-    @track cardRows = [];
+    @track rowCards = [];
     @track matchCemetery = [];
     @track subscription = {};
     @track playersHands = [];
     @track canPlay = false;
+    @track hideEnemyCards = true;
+
+    @track actualPlayerHand = [];
+    @track enemyPlayerHand = [];
+    @track actualPlayerRowCards = [];
+    @track enemyPlayerRowCards = [];
 
     channelName = '/data/Match__ChangeEvent';
 
@@ -40,16 +46,40 @@ export default class MatchManagement extends LightningElement {
         //Get both player hands
         this.playersHands = await getPlayersHands({playerLoginCode : this.playerLoginCode, matchId : this.match.Id});
         //Get all Card Rows
-        this.cardRows = await getAllRowCards({matchId : this.match.Id});
+        this.rowCards = await getAllRowCards({matchId : this.match.Id});
         //Get Cemetery
         this.matchCemetery = await getAllCemeteryCards({matchId : this.match.Id});
         //TODO: Implement a logic to identify turn change
+        this.setPlayerCards();
+        this.setPlayersRowCards();
         this.setCanPlay();
+    }
+
+    setPlayerCards() {
+        for(let handItem of this.playersHands) {
+            if(handItem.ContactPlayerHand__r.LoginCode__c == this.player.LoginCode__c) {
+                this.actualPlayerHand.push(handItem);
+                continue;
+            }
+            this.enemyPlayerHand.push(handItem);
+        }
+    }
+
+    setPlayersRowCards() {
+        for(let rowCard of this.rowCards) {
+            rowCard.isEnergy = rowCard.BattlefieldRow__r.Category__c == 'Effect' ? true : false;
+            rowCard.hasCard = rowCard.Deckcard__c != null && rowCard.Deckcard__c != undefined;
+
+            if(rowCard.BattlefieldRow__r.Player__r.LoginCode__c == this.player.LoginCode__c) {
+                this.actualPlayerRowCards.push(rowCard);
+                continue;
+            }
+            this.enemyPlayerRowCards.push(rowCard);
+        }
     }
 
     setCanPlay() {
         let firstPlayerToPlay = this.identifyPlayer();
-
         if(firstPlayerToPlay && this.match.Turn__c == 0 || 
             (firstPlayerToPlay && this.match.Turn__c > 0 && !this.identfyTurnIsOdd()) || 
             !firstPlayerToPlay && this.identfyTurnIsOdd()) {

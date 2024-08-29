@@ -1,33 +1,36 @@
 <template>
     <div class="card-container">
-
-        <div class="card-background" style={getBackgroundColor}>
+        <template if:true={hideCard}>
+        </template>
+        <template if:false={hideCard}>
+            <div class="card-background" style={getBackgroundColor}>
       
-          <div class="card-frame">
-      
-            <div class="frame-header">
-                <h1 class="name">
-                    {name}
-                </h1>
-            </div>
-      
-            <img class="frame-art" src="https://image.ibb.co/fqdLEn/nissa.jpg" alt="nissa art">
-      
-            <div class="frame-text-box">
-              <p class="description ftb-inner-margin">
-                {description}
-              </p>
-            </div>
-            <template if:false={isEnergyCard}>
-                <div class="card-footer">
-                    <span class="card-attribute">Energy cost: {energyCost}</span>
-                    <span class="card-attribute">Attack: {attack}</span>
-                    <span class="card-attribute">Defense: {defense}</span>
+                <div class="card-frame">
+            
+                  <div class="frame-header">
+                      <h1 class="name">
+                          {name}
+                      </h1>
+                  </div>
+            
+                  <img class="frame-art" src="https://image.ibb.co/fqdLEn/nissa.jpg" alt="nissa art">
+            
+                  <div class="frame-text-box">
+                    <p class="description ftb-inner-margin">
+                      {description}
+                    </p>
+                  </div>
+                  <template if:false={isEnergyCard}>
+                      <div class="card-footer">
+                          <span class="card-attribute">Energy cost: {energyCost}</span>
+                          <span class="card-attribute">Attack: {attack}</span>
+                          <span class="card-attribute">Defense: {defense}</span>
+                      </div>
+                  </template>
                 </div>
-            </template>
-          </div>
-        </div>
-      </div>
+              </div>
+        </template>  
+    </div>
     <!--<div class="card">
         <div class="card-header">
             <h1 class="card-title">{name}</h1>

@@ -1,0 +1,133 @@
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.board {
+    width: 900px;
+    background-color: #34495e;
+    border: 5px solid #ecf0f1;
+    border-radius: 10px;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+}
+
+.hero-zone {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px;
+    border-bottom: 2px solid #ecf0f1;
+}
+
+.hero {
+    width: 150px;
+    height: 150px;
+    background-color: #16a085;
+    border-radius: 10px;
+}
+
+.hero-player {
+    background-color: #1abc9c;
+}
+
+.hero-opponent {
+    background-color: #e74c3c;
+}
+
+.play-area {
+    flex: 1;
+    display: flex;
+    justify-content: space-between;
+    padding: 10px;
+}
+
+.hand-zone {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+.hand {
+    display: flex;
+    justify-content: space-around;
+    padding: 10px 0;
+}
+
+.hand-player {
+    justify-content: center;
+}
+
+.hand-enemy {
+    justify-content: center;
+}
+
+.card {
+    width: 100px;
+    height: 150px;
+    background-color: #2980b9;
+    border-radius: 5px;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+}
+
+.battlefield {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    justify-content: space-between;
+    padding: 10px 0;
+}
+
+.line {
+    background-color: #f39c12;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.enemy-card-size {
+    width:142px;
+    height:180px;
+    transform: scale(0.5);
+    transform-origin: top left;
+    z-index: 1;
+    transition: transform 0.4s ease;
+}
+
+.card-size {
+    width:142px;
+    height:180px;
+    transform: scale(0.5);
+    transform-origin: top left;
+    z-index: 1;
+    transition: transform 0.4s ease;
+}
+
+.card-size:hover {
+    transform: scale(1.1);
+    z-index: 2;
+}
+
+.card-battlefield-position {
+    width:142px;
+    height:180px;
+    border: 0.5px solid #34495e;
+    border-radius: 8%;
+    margin: 3px;
+}
+
+.enemy-card {
+    transform: rotate(180deg) scale(0.5);
+    transform-origin: center;
+    padding-right: 12px;
+    position: relative;
+    left: 32px;
+    top: 42px;
+}

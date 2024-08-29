@@ -2,6 +2,7 @@ import { LightningElement, api, track } from 'lwc';
 
 export default class CardRender extends LightningElement {
     @api cardData = {};
+    @api hideCard = false;
 
     @track attack = 0;
     @track defense = 0;
@@ -20,7 +21,7 @@ export default class CardRender extends LightningElement {
         this.defense = this.cardData.Defense__c;
         this.name = this.cardData.Name;
         this.description = this.cardData.Description__c;
-        this.imageUrl = this.cardData.imageUrl__c;
+        this.imageUrl = this.cardData.Image__c;
         this.rarity = this.cardData.Rarity__c;
         this.type = this.cardData.Type__c;
         this.energyCost = this.cardData.EnergyCost__c;
@@ -29,6 +30,6 @@ export default class CardRender extends LightningElement {
     }
 
     get getBackgroundColor() {
-        return `background-color:${this.backgroundColor}`
+        return `background-color:${this.backgroundColor}`;
     }
 }
