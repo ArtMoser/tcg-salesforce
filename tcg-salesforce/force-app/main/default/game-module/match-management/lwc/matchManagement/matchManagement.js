@@ -49,10 +49,17 @@ export default class MatchManagement extends LightningElement {
         this.rowCards = await getAllRowCards({matchId : this.match.Id});
         //Get Cemetery
         this.matchCemetery = await getAllCemeteryCards({matchId : this.match.Id});
-        //TODO: Implement a logic to identify turn change
+
         this.setPlayerCards();
         this.setPlayersRowCards();
         this.setCanPlay();
+
+        //TODO: Implement a logic to identify turn change
+        //TODO: Implement validations to check if is the player turn
+        //TODO: When a card is clicked, highlighted it and the spaces on field that it's possible to set
+        //TODO: Implement the card set on the field
+        //TODO: Implement the card Attack to other card
+        //TODO: Implement the card direct attck
     }
 
     setPlayerCards() {
