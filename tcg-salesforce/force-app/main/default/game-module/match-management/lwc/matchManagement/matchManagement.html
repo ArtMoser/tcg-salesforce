@@ -29,7 +29,11 @@
                                         </c-card-render>
                                     </template>
                                     <template if:false={enemyCardRowEffect.hasCard}>
-                                        <div key={enemyCardRowEffect.Id} class="card-battlefield-position"></div>
+                                        <div 
+                                            key={enemyCardRowEffect.Id} 
+                                            class="card-battlefield-position"
+                                        >
+                                        </div>
                                     </template>
                                 </template>
                             </template>
@@ -47,7 +51,11 @@
                                         </c-card-render>
                                     </template>
                                     <template if:false={enemyCardRowCreature.hasCard}>
-                                        <div key={enemyCardRowCreature.Id} class="card-battlefield-position"></div>
+                                        <div 
+                                            key={enemyCardRowCreature.Id} 
+                                            class="card-battlefield-position"
+                                        >
+                                        </div>
                                     </template>
                                 </template>
                             </template>
@@ -65,7 +73,13 @@
                                         </c-card-render>
                                     </template>
                                     <template if:false={cardRowCreature.hasCard}>
-                                        <div key={cardRowCreature.Id} class="card-battlefield-position"></div>
+                                        <div 
+                                            key={cardRowCreature.Id} 
+                                            class="card-battlefield-position"
+                                            data-id={cardRowCreature.Id}
+                                            onclick={setCardOnCreatureSpot}
+                                        >
+                                        </div>
                                     </template>
                                 </template>
                             </template>
@@ -83,7 +97,13 @@
                                         </c-card-render>
                                     </template>
                                     <template if:false={cardRowEffect.hasCard}>
-                                        <div key={cardRowEffect.Id} class="card-battlefield-position"></div>
+                                        <div 
+                                            key={cardRowEffect.Id} 
+                                            class="card-battlefield-position"
+                                            data-id={cardRowEffect.Id}
+                                            onclick={setCardOnEffectSpot}
+                                        >
+                                        </div>
                                     </template>
                                 </template>
                             </template>
@@ -95,7 +115,10 @@
                                 key={playerCard.Id}
                                 card-data={playerCard.DeckCard__r.PlayerCard__r.Card__r}
                                 data-id={playerCard.DeckCard__c}
+                                data-energy={playerCard.DeckCard__r.PlayerCard__r.Card__r.EnergyCost__c}
+                                data-type={playerCard.DeckCard__r.PlayerCard__r.Card__r.Type__c}
                                 class="card-size"
+                                onclick={setSelectedCard}
                             >
                             </c-card-render>
                         </template>

@@ -62,4 +62,19 @@ public with sharing class MatchManagementService {
     public List<MatchCemetery__c> getAllCemeteryCards(String matchId) {
         return this.repository.getAllCemeteryCards(matchId);
     }
+
+    public void upadateRowCard(RowCard__c updatedRowCard, String playerLoginCode, String matchId) {
+        Contact player = this.utilRepository.getContactWithDecks(playerLoginCode);
+        this.MatchManagement.updatedRowCard(updatedRowCard);
+        this.MatchManagement.deletePlayerHandRecord(new Set<Id>{updatedRowCard.DeckCard__c});
+        this.MatchManagement.createMatchEvent(player, matchId, 'Put card on field');
+    }
+
+    public void sendEnergyToCemetery(RowCard__c updatedRowCard, String playerLoginCode, String matchId) {
+        DeckCard__c deckCardPutInField = this.repository.getDeckCardById(updatedRowCard.DeckCard__c);
+
+        if(deckCardPutInField.PlayerCard__r.Card__r.Type__c == 'Monster' && deckCardPutInField.PlayerCard__r.Card__r.EnergyCost__c > 0) {
+            this.matchManagement.consumeEnergy(playerLoginCode, matchId, deckCardPutInField.PlayerCard__r.Card__r.EnergyCost__c);
+        }
+    }
 }

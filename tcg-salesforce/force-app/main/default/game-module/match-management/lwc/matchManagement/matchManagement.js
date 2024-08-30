@@ -1,13 +1,9 @@
 import { LightningElement, api, track } from 'lwc';
 import { subscribe, unsubscribe, onError } from 'lightning/empApi';
+import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 
-import getPlayer from '@salesforce/apex/MatchManagementController.getPlayer';
-import getCurrentMatch from '@salesforce/apex/MatchManagementController.getCurrentMatch';
-import getPlayerAvailableDeckCards from '@salesforce/apex/MatchManagementController.getCurrentMatch';
-import savePlayerHand from '@salesforce/apex/MatchManagementController.savePlayerHand';
-import getPlayersHands from '@salesforce/apex/MatchManagementController.getPlayersHands';
-import getAllRowCards from '@salesforce/apex/MatchManagementController.getAllRowCards';
-import getAllCemeteryCards from '@salesforce/apex/MatchManagementController.getAllCemeteryCards';
+import getAllMatchData from '@salesforce/apex/MatchManagementController.getAllMatchData';
+import upadateRowCard from '@salesforce/apex/MatchManagementController.upadateRowCard';
 
 export default class MatchManagement extends LightningElement {
     @api playerLoginCode = '123';
@@ -25,41 +21,59 @@ export default class MatchManagement extends LightningElement {
     @track enemyPlayerHand = [];
     @track actualPlayerRowCards = [];
     @track enemyPlayerRowCards = [];
+    @track effectCardsSet = 0;
+    @track turn = 0;
+    @track availableEnergy = 0;
 
-    channelName = '/data/Match__ChangeEvent';
+    @track selectedDeckCardId = '';
+
+    channelName = '/event/MatchUpdate__e';
 
     connectedCallback() {
-        this.registerErrorListener();
-        this.registerSubscribe();
         this.initMatchManagement();
+        this.registerSubscribe();        
     }
 
-    disconnectedCallback() {
-        unsubscribe(this.subscription, () => console.log('Unsubscribed to change events.'));
+    registerSubscribe() {
+        const messageCallback = (response) => {
+            this.initMatchManagement();
+            console.log('New message received: ', JSON.stringify(response));
+        }
+
+        subscribe(this.channelName, -1, messageCallback).then((response) => {
+            console.log(JSON.stringify(response.channel));
+        })
     }
 
     async initMatchManagement() {
-        this.match = await getCurrentMatch({playerLoginCode: this.playerLoginCode});
-        this.player = await getPlayer({playerLoginCode: this.playerLoginCode});
-        //Get current player Deck cards
-        this.playerDeckCards = await getPlayerAvailableDeckCards({playerLoginCode : this.playerLoginCode, matchId : this.match.Id});
-        //Get both player hands
-        this.playersHands = await getPlayersHands({playerLoginCode : this.playerLoginCode, matchId : this.match.Id});
-        //Get all Card Rows
-        this.rowCards = await getAllRowCards({matchId : this.match.Id});
-        //Get Cemetery
-        this.matchCemetery = await getAllCemeteryCards({matchId : this.match.Id});
+        let matchData = await getAllMatchData({playerLoginCode : this.playerLoginCode, matchId : this.match.Id});
+        this.match = matchData.match;
+        this.player = matchData.player;
+        this.playerDeckCards = matchData.deckCards;
+        this.playersHands = matchData.playersHands;
+        this.rowCards = matchData.rowCards;
+        this.matchCemetery = matchData.matchCemetery;
+
+        if(this.turn != this.match.Turn__c) {
+            this.effectCardsSet = 0;
+            this.turn = this.match.Turn__c;
+        }
+
+        this.actualPlayerHand = [];
+        this.enemyPlayerHand = [];
+        this.actualPlayerRowCards = [];
+        this.enemyPlayerRowCards = [];
+        this.availableEnergy = 0;
 
         this.setPlayerCards();
         this.setPlayersRowCards();
         this.setCanPlay();
+        this.setAvailableEnergy();
 
-        //TODO: Implement a logic to identify turn change
-        //TODO: Implement validations to check if is the player turn
         //TODO: When a card is clicked, highlighted it and the spaces on field that it's possible to set
-        //TODO: Implement the card set on the field
         //TODO: Implement the card Attack to other card
         //TODO: Implement the card direct attck
+        //TODO: Implement a logic to identify turn change
     }
 
     setPlayerCards() {
@@ -69,6 +83,14 @@ export default class MatchManagement extends LightningElement {
                 continue;
             }
             this.enemyPlayerHand.push(handItem);
+        }
+    }
+
+    setAvailableEnergy() {
+        for(let card of this.actualPlayerRowCards) {
+            if(card.isEnergy && card.Deckcard__c) {
+                this.availableEnergy += 1;
+            }
         }
     }
 
@@ -105,14 +127,6 @@ export default class MatchManagement extends LightningElement {
         return false;
     }
 
-    registerSubscribe() {
-        const messageCallback = (message) => {
-            this.handleMessage(message);
-        };
-        subscribe(this.channelName, messageCallback);
-        this.messageCallback = messageCallback;
-    }
-
     drawPlayerCards() {
         if(this.playerDeckCards.length > 0) {
             this.generatePlayerHand(this.playerDeckCards[0]);
@@ -145,28 +159,89 @@ export default class MatchManagement extends LightningElement {
 
     }
 
-    registerErrorListener() {
-        onError(error => {
-            console.error('Salesforce error', JSON.stringify(error));
-        });
+    setSelectedCard(event) {
+        let energyCost = event.currentTarget.dataset.energy;
+        let type = event.currentTarget.dataset.type;
+
+        if(type == 'Monster' && parseInt(energyCost) > this.availableEnergy) {
+            this.showToast('You do not have enough energy to use this card');
+            return;
+        }
+
+        this.selectedDeckCardId = event.currentTarget.dataset.id;
     }
 
-    registerSubscribe() {
-        const changeEventCallback = changeEvent => {
-            this.processChangeEvent(changeEvent);
+    setCardOnEffectSpot(event) {
+        let selectedSpot = event.currentTarget.dataset.id;
+
+        if(!this.selectedDeckCardId) {
+            return;
+        }
+
+        if(this.effectCardsSet > 0) {
+            this.showToast('You can only set 1 effect card per turn');
+            return;
+        }
+
+        if(this.checkCardOnHandType('Energy')) {
+            this.sendSpotUpdatedToSalesforce(selectedSpot);
+            this.effectCardsSet += 1;
+            return;
+        }
+
+        this.showToast('You cannot put an creature card on a effect card spot');
+    }
+
+    setCardOnCreatureSpot(event) {
+        let selectedSpot = event.currentTarget.dataset.id;
+
+        if(!this.selectedDeckCardId) {
+            return;
+        }
+
+        if(this.checkCardOnHandType('Monster')) {
+            this.sendSpotUpdatedToSalesforce(selectedSpot);
+            return;
+        }
+
+        this.showToast('You cannot put an effect card on a creature card spot');
+    }
+
+    async sendSpotUpdatedToSalesforce(rowCardId) {
+        let rowCardUpdated = {
+            Id: rowCardId,
+            Deckcard__c: this.selectedDeckCardId
         };
 
-        subscribe(this.channelName, -1, changeEventCallback).then(subscription => {
-            this.subscription = subscription;
+        upadateRowCard({
+            rowCardUpdated: rowCardUpdated,
+            playerLoginCode: this.playerLoginCode,
+            matchId: this.match.Id
+        }).then(response => {
+            console.log(response);
+        })
+        .catch(error => {
+            console.log(error);
         });
     }
 
-    processChangeEvent(changeEvent) {
-        try {
-            //TODO: Implement event changes
-            //this.drawPlayerCards();
-        } catch (err) {
-            console.error(err);
+    checkCardOnHandType(typeToCompare) {
+        for(let playerHand of this.actualPlayerHand) {
+            if(playerHand.DeckCard__c == this.selectedDeckCardId) {
+                if(playerHand.DeckCard__r.PlayerCard__r.Card__r.Type__c == typeToCompare) {
+                    return true;
+                }
+
+                return false;
+            }
         }
+    }
+
+    showToast(messageValue) {
+        const event = new ShowToastEvent({
+            title: 'Attention!',
+            message: messageValue,
+        });
+        this.dispatchEvent(event);
     }
 }

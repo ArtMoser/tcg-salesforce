@@ -121,6 +121,7 @@
     border: 0.5px solid #34495e;
     border-radius: 8%;
     margin: 3px;
+    cursor: pointer;
 }
 
 .enemy-card {

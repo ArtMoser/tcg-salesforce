@@ -1,22 +1,17 @@
 public with sharing class MatchManagementController {
-    @AuraEnabled
-    public static Contact getPlayer(String playerLoginCode) {
-        return MatchManagementService.getInstance().getPlayer(playerLoginCode);
-    }
 
     @AuraEnabled
-    public static List<DeckCard__c> getPlayerAvailableDeckCards(String playerLoginCode, String matchId) {
-        return MatchManagementService.getInstance().getPlayerAvailableDeckCards(playerLoginCode, matchId);
-    }
+    public static MatchManagementFactory.MatchData getAllMatchData(String playerLoginCode, String matchId) {
+        MatchManagementFactory.MatchData matchData = new MatchManagementFactory.MatchData();
+        matchData.player = MatchManagementService.getInstance().getPlayer(playerLoginCode);
+        matchData.match = MatchManagementService.getInstance().getCurrentMatch(playerLoginCode);
+        matchId = matchData.match.Id;
+        matchData.deckCards = MatchManagementService.getInstance().getPlayerAvailableDeckCards(playerLoginCode, matchId);
+        matchData.playersHands = MatchManagementService.getInstance().getPlayersHands(playerLoginCode, matchId);
+        matchData.rowCards = MatchManagementService.getInstance().getAllRowCards(matchId);
+        matchData.matchCemitery = MatchManagementService.getInstance().getAllCemeteryCards(matchId);
 
-    @AuraEnabled
-    public static Match__c getCurrentMatch(String playerLoginCode) {
-        return MatchManagementService.getInstance().getCurrentMatch(playerLoginCode);
-    }
-
-    @AuraEnabled
-    public static List<PlayerHand__c> getPlayersHands(String playerLoginCode, String matchId) {
-        return MatchManagementService.getInstance().getPlayersHands(playerLoginCode, matchId);
+        return matchData;
     }
 
     @AuraEnabled
@@ -25,12 +20,8 @@ public with sharing class MatchManagementController {
     }
 
     @AuraEnabled
-    public static List<RowCard__c> getAllRowCards(String matchId) {
-        return MatchManagementService.getInstance().getAllRowCards(matchId);
-    }
-
-    @AuraEnabled
-    public static List<MatchCemetery__c> getAllCemeteryCards(String matchId) {
-        return MatchManagementService.getInstance().getAllCemeteryCards(matchId);
+    public static void upadateRowCard(RowCard__c rowCardUpdated, String playerLoginCode, String matchId){
+        MatchManagementService.getInstance().sendEnergyToCemetery(rowCardUpdated, playerLoginCode, matchId);
+        MatchManagementService.getInstance().upadateRowCard(rowCardUpdated, playerLoginCode, matchId);
     }
 }

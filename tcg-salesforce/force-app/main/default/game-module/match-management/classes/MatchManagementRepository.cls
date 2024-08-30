@@ -1,4 +1,44 @@
 public with sharing class MatchManagementRepository {
+    public DeckCard__c getDeckCardById(Id deckCardId) {
+        return [
+            SELECT
+                Id,
+                PlayerCard__r.Card__c,
+                Name,
+                PlayerCard__r.Card__r.Attack__c,
+                PlayerCard__r.Card__r.Defense__c,
+                PlayerCard__r.Card__r.Description__c,
+                PlayerCard__r.Card__r.Image__c,
+                PlayerCard__r.Card__r.Rarity__c,
+                PlayerCard__r.Card__r.Type__c,
+                PlayerCard__r.Card__r.EnergyCost__c,
+                PlayerCard__r.Card__r.RarityColor__c,
+                Deck__r.Player__r.LoginCode__c
+            FROM
+                DeckCard__c
+            WHERE
+                Id =: deckCardId
+        ];
+    }
+
+    public List<RowCard__c> getCardRowsEnnergyByMatchAndPlayerLoginCode(String matchId, String playerLoginCode) {
+        return [
+            SELECT
+                Id,
+                DeckCard__c,
+                DeckCard__r.PlayerCard__r.Card__r.Name,
+                Deckcard__r.PlayerCard__r.Player__c
+            FROM
+                RowCard__c
+            WHERE
+                DeckCard__r.PlayerCard__r.Card__r.Type__c = 'Energy'
+                AND
+                BattlefieldRow__r.Match__c =: matchId
+                AND
+                BattlefieldRow__r.Player__r.LoginCode__c =: playerLoginCode
+        ];
+    }
+
     public List<DeckCard__c> getPlayerAvailableDeckCards(Id deckId, Set<Id> deckCardsUsed) {
         return [
             SELECT
@@ -111,7 +151,9 @@ public with sharing class MatchManagementRepository {
         return [
             SELECT
                 Id,
-                UpdateMatch__c
+                UpdateMatch__c,
+                Event__c,
+                LastPlayerAction__c
             FROM
                 Match__c
             WHERE
@@ -207,6 +249,18 @@ public with sharing class MatchManagementRepository {
                 MatchCemetery__c
             WHERE 
                 MatchCemetery__c =: matchId
+        ];
+    }
+
+    public List<PlayerHand__c> getPlayerHandByDeckCardIds(Set<Id> deckCardIds) {
+        return [
+            SELECT
+                Id,
+                DeckCard__c
+            FROM
+                PlayerHand__c
+            WHERE
+                DeckCard__c IN: deckCardIds
         ];
     }
 }
