@@ -24,4 +24,9 @@ public with sharing class MatchManagementController {
         MatchManagementService.getInstance().sendEnergyToCemetery(rowCardUpdated, playerLoginCode, matchId);
         MatchManagementService.getInstance().upadateRowCard(rowCardUpdated, playerLoginCode, matchId);
     }
+
+    @AuraEnabled
+    public static void causeDirectDamage(Integer damage, String matchId, String playerLoginCode){
+        MatchManagementService.getInstance().causeDirectDamage(damage, matchId, playerLoginCode);
+    }
 }

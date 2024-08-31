@@ -23,7 +23,7 @@
                                         <c-card-render
                                             key={enemyCardRowEffect.Id}
                                             card-data={enemyCardRowEffect.Deckcard__r.PlayerCard__r.Card__r}
-                                            data-id={enemyCardRowEffect.DeckCard__c}
+                                            data-id={enemyCardRowEffect.Deckcard__c}
                                             class="card-size enemy-card"
                                         >
                                         </c-card-render>
@@ -45,7 +45,7 @@
                                         <c-card-render
                                             key={enemyCardRowCreature.Id}
                                             card-data={enemyCardRowCreature.Deckcard__r.PlayerCard__r.Card__r}
-                                            data-id={enemyCardRowCreature.DeckCard__c}
+                                            data-id={enemyCardRowCreature.Deckcard__c}
                                             class="card-size enemy-card"
                                         >
                                         </c-card-render>
@@ -60,6 +60,11 @@
                                 </template>
                             </template>
                         </div>
+                        <template if:true={enableDirectAttack}>
+                            <div class="line">
+                                <lightning-button variant="destructive" label="Direct Attack" title="Direct Attack" onclick={handleDirectAttack} class="slds-m-left_x-small"></lightning-button>
+                            </div>
+                        </template>
                         <div class="line">
                             <template for:each={actualPlayerRowCards} for:item="cardRowCreature">
                                 <template if:false={cardRowCreature.isEnergy}>
@@ -67,8 +72,10 @@
                                         <c-card-render
                                             key={cardRowCreature.Id}
                                             card-data={cardRowCreature.Deckcard__r.PlayerCard__r.Card__r}
-                                            data-id={cardRowCreature.DeckCard__c}
+                                            data-id={cardRowCreature.Deckcard__c}
+                                            data-rowid={cardRowCreature.Id}
                                             class="card-size"
+                                            onclick={setSlectedCardToAct}
                                         >
                                         </c-card-render>
                                     </template>

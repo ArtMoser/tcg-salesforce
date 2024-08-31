@@ -4,6 +4,7 @@ import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 
 import getAllMatchData from '@salesforce/apex/MatchManagementController.getAllMatchData';
 import upadateRowCard from '@salesforce/apex/MatchManagementController.upadateRowCard';
+import causeDirectDamage from '@salesforce/apex/MatchManagementController.causeDirectDamage';
 
 export default class MatchManagement extends LightningElement {
     @api playerLoginCode = '123';
@@ -26,6 +27,8 @@ export default class MatchManagement extends LightningElement {
     @track availableEnergy = 0;
 
     @track selectedDeckCardId = '';
+    @track selectedTargetCard = '';
+    @track enableDirectAttack = false;
 
     channelName = '/event/MatchUpdate__e';
 
@@ -54,19 +57,23 @@ export default class MatchManagement extends LightningElement {
         this.rowCards = matchData.rowCards;
         this.matchCemetery = matchData.matchCemetery;
 
-        if(this.turn != this.match.Turn__c) {
-            this.effectCardsSet = 0;
-            this.turn = this.match.Turn__c;
-        }
-
         this.actualPlayerHand = [];
         this.enemyPlayerHand = [];
         this.actualPlayerRowCards = [];
         this.enemyPlayerRowCards = [];
         this.availableEnergy = 0;
 
+        this.selectedTargetCard = '';
+        this.enableDirectAttack = false;
+
         this.setPlayerCards();
         this.setPlayersRowCards();
+
+        if(this.turn != this.match.Turn__c) {
+            this.effectCardsSet = 0;
+            this.turn = this.match.Turn__c;
+        }
+
         this.setCanPlay();
         this.setAvailableEnergy();
 
@@ -95,11 +102,19 @@ export default class MatchManagement extends LightningElement {
     }
 
     setPlayersRowCards() {
+        if(this.match.Turn__c != this.turn) {
+            this.selectedDeckCardId = '';
+        }
+
         for(let rowCard of this.rowCards) {
             rowCard.isEnergy = rowCard.BattlefieldRow__r.Category__c == 'Effect' ? true : false;
             rowCard.hasCard = rowCard.Deckcard__c != null && rowCard.Deckcard__c != undefined;
 
             if(rowCard.BattlefieldRow__r.Player__r.LoginCode__c == this.player.LoginCode__c) {
+                if(this.match.Turn__c == this.turn && rowCard.Deckcard__c == this.selectedDeckCardId) {
+                    rowCard.alreadyAttacked = true;
+                }
+
                 this.actualPlayerRowCards.push(rowCard);
                 continue;
             }
@@ -121,7 +136,7 @@ export default class MatchManagement extends LightningElement {
     }
 
     identifyPlayer() {
-        if(this.player.playerLoginCode == this.match.PlayerOne__r.LoginCode__c) {
+        if(this.player.LoginCode__c == this.match.PlayerOne__r.LoginCode__c) {
             return true;
         }
         return false;
@@ -159,7 +174,68 @@ export default class MatchManagement extends LightningElement {
 
     }
 
+    setSlectedCardToAct(event) {
+        if(!this.canPlay) {
+            return;
+        }
+
+        let deckCardId = event.currentTarget.dataset.id;
+        let rowId = event.currentTarget.dataset.rowid;
+
+        for(let rowCard of this.actualPlayerRowCards) {
+            if(rowCard.Id == rowId && deckCardId ) {
+                if(!rowCard.alreadyAttacked) {
+                    this.selectedDeckCardId = deckCardId;
+                    this.checkEnableDirectAttack();
+                    break;
+                } else {
+                    this.showToast('This card already attacked this turn');
+                    break;
+                }
+            }
+        }
+    }
+
+    checkEnableDirectAttack() {
+        for(let enemyRowCard of this.enemyPlayerRowCards) {
+            if(enemyRowCard.BattlefieldRow__r.Category__c == 'Creature' && enemyRowCard.Deckcard__c) {
+                this.enableDirectAttack = false;
+                this.showToast('Select which opponent card will be attacked');
+                return;
+            }
+        }
+
+        this.enableDirectAttack = true;
+    }
+
+    handleDirectAttack() {
+        let damage = 0;
+        for(let rowCard of this.actualPlayerRowCards) {
+            if(rowCard.Deckcard__c == this.selectedDeckCardId) {
+                rowCard.alreadyAttacked = true;
+                damage += rowCard.Deckcard__r.PlayerCard__r.Card__r.Attack__c;
+                break;
+            }
+        }
+
+        causeDirectDamage({
+                            damage : damage, 
+                            matchId : this.match.Id, 
+                            playerLoginCode : this.playerLoginCode
+        }).then(response => {
+            console.log(response);
+        })
+        .catch(error => {
+            console.log(error);
+        });
+
+    }
+
     setSelectedCard(event) {
+        if(!this.canPlay) {
+            return;
+        }
+
         let energyCost = event.currentTarget.dataset.energy;
         let type = event.currentTarget.dataset.type;
 
@@ -172,6 +248,10 @@ export default class MatchManagement extends LightningElement {
     }
 
     setCardOnEffectSpot(event) {
+        if(!this.canPlay) {
+            return;
+        }
+
         let selectedSpot = event.currentTarget.dataset.id;
 
         if(!this.selectedDeckCardId) {
@@ -193,6 +273,10 @@ export default class MatchManagement extends LightningElement {
     }
 
     setCardOnCreatureSpot(event) {
+        if(!this.canPlay) {
+            return;
+        }
+
         let selectedSpot = event.currentTarget.dataset.id;
 
         if(!this.selectedDeckCardId) {

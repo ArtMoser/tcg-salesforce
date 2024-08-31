@@ -153,7 +153,13 @@ public with sharing class MatchManagementRepository {
                 Id,
                 UpdateMatch__c,
                 Event__c,
-                LastPlayerAction__c
+                LastPlayerAction__c,
+                LifePointsPlayerOne__c,
+                LifePointsPlayerTwo__c,
+                PlayerOne__c,
+                PlayerTwo__c,
+                PlayerOne__r.LoginCode__c,
+                PlayerTwo__r.LoginCode__c
             FROM
                 Match__c
             WHERE

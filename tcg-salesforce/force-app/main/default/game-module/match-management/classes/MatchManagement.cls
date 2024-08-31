@@ -70,4 +70,14 @@ public with sharing class MatchManagement {
         update rowCardsToConsume;
         insert matchCemetery;
     }
+
+    public void causeDirectDamage(Integer damage, String matchId, String playerLoginCode) {
+        Match__c match = this.repository.getMatchById(matchId);
+
+        if(match.PlayerOne__r.LoginCode__c == playerLoginCode) {
+            match.LifePointsPlayerTwo__c -= damage;
+        }
+
+        update match;
+    }
 }
