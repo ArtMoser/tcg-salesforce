@@ -6,12 +6,14 @@
 
 .board {
     width: 900px;
-    background-color: #34495e;
-    border: 5px solid #ecf0f1;
+    background-color: #574534;
+    border: 1px solid #35271963;
     border-radius: 10px;
     position: relative;
     display: flex;
     flex-direction: column;
+    box-shadow: 7px 10px 5px 0px rgba(0, 0, 0, 0.75);
+    transform: scale(0.7);
 }
 
 .hero-zone {
@@ -57,10 +59,16 @@
 
 .hand-player {
     justify-content: center;
+    background-color: #00387d87;
+    box-shadow: 7px 10px 5px 0px rgb(0 0 0 / 41%);
+    border-radius: 10px;
 }
 
 .hand-enemy {
     justify-content: center;
+    background-color: #6b000080;
+    box-shadow: 7px 10px 5px 0px rgb(0 0 0 / 41%);
+    border-radius: 10px;
 }
 
 .card {
@@ -84,7 +92,7 @@
 }
 
 .line {
-    background-color: #f39c12;
+    /*background-color: #f39c12;*/
     margin-bottom: 10px;
     border-radius: 5px;
     display: flex;
@@ -101,6 +109,11 @@
     transition: transform 0.4s ease;
 }
 
+.enemy-card-size:hover {
+    transform: scale(0.9);
+    z-index: 2;
+}
+
 .card-size {
     width:142px;
     height:180px;
@@ -111,17 +124,25 @@
 }
 
 .card-size:hover {
-    transform: scale(1.1);
+    transform: scale(0.9);
     z-index: 2;
 }
 
 .card-battlefield-position {
     width:142px;
     height:180px;
-    border: 0.5px solid #34495e;
     border-radius: 8%;
     margin: 3px;
     cursor: pointer;
+    background-color: #9d8d8e;
+}
+
+.card-battlefield-position-enemy {
+    border: 0.5px solid #f50202;
+}
+
+.card-battlefield-position-player {
+    border: 0.5px solid #0065e2;
 }
 
 .enemy-card {
@@ -136,4 +157,12 @@
 .end-turn-button {
     justify-content: flex-end;
     display: flex;
+}
+
+.line-effect {
+    /* background-color: #9b59b6; */
+}
+
+.line-creature {
+    /* background-color: #3498db; */
 }

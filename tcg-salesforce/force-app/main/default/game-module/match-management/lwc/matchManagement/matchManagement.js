@@ -31,6 +31,7 @@ export default class MatchManagement extends LightningElement {
     @track availableEnergy = 0;
 
     @track selectedDeckCardId = '';
+    @track selectedActDeckCardId = '';
     @track selectedTargetCard = '';
     @track enableDirectAttack = false;
 
@@ -219,13 +220,13 @@ export default class MatchManagement extends LightningElement {
         for(let rowCard of this.actualPlayerRowCards) {
             if(rowCard.Id == rowId && deckCardId ) {
                 if(!rowCard.alreadyAttacked) {
-                    if(this.selectedDeckCardId == deckCardId) {
+                    if(this.selectedActDeckCardId == deckCardId) {
                         this.selectedDeckCardId = '';
                         rowCard.isSelected = false;
                         break;
                     }
 
-                    this.selectedDeckCardId = deckCardId;
+                    this.selectedActDeckCardId = deckCardId;
                     rowCard.isSelected = true;
 
                     if(this.selectedTargetCard) {
@@ -248,7 +249,7 @@ export default class MatchManagement extends LightningElement {
         let enemyPlayerTargetCard;
 
         for(let rowCard of this.actualPlayerRowCards) {
-            if(rowCard.Deckcard__c == this.selectedDeckCardId) {
+            if(rowCard.Deckcard__c == this.selectedActDeckCardId) {
                 actualPlayerAttackCard = rowCard.Deckcard__r.PlayerCard__r.Card__r;
                 break;
             }
@@ -276,7 +277,7 @@ export default class MatchManagement extends LightningElement {
         } else if(enemyPlayerTargetCard.Defense__c > actualPlayerAttackCard.Attack__c) {
             destroyPlayerCard({
                 playerLoginCode: this.playerLoginCode,
-                playerDeckCardIdToDestroy: this.selectedDeckCardId,
+                playerDeckCardIdToDestroy: this.selectedActDeckCardId,
                 matchId: this.match.Id
             }).then(response => {
                 console.log(response);
@@ -287,7 +288,7 @@ export default class MatchManagement extends LightningElement {
         } else {
             destroyPlayerAndEnemyCard({
                 playerLoginCode: this.playerLoginCode,
-                playerDeckCardIdToDestroy: this.selectedDeckCardId,
+                playerDeckCardIdToDestroy: this.selectedActDeckCardId,
                 enemyDeckCardIdToDestroy: this.selectedTargetCard,
                 matchId: this.match.Id
             }).then(response => {
@@ -314,7 +315,7 @@ export default class MatchManagement extends LightningElement {
     handleDirectAttack() {
         let damage = 0;
         for(let rowCard of this.actualPlayerRowCards) {
-            if(rowCard.Deckcard__c == this.selectedDeckCardId) {
+            if(rowCard.Deckcard__c == this.selectedActDeckCardId) {
                 rowCard.alreadyAttacked = true;
                 damage += rowCard.Deckcard__r.PlayerCard__r.Card__r.Attack__c;
                 break;
@@ -322,8 +323,8 @@ export default class MatchManagement extends LightningElement {
         }
 
         causeDirectDamage({
-                            damage : damage, 
-                            matchId : this.match.Id, 
+                            damage : damage,
+                            matchId : this.match.Id,
                             playerLoginCode : this.playerLoginCode
         }).then(response => {
             console.log(response);

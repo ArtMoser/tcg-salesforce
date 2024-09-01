@@ -65,7 +65,7 @@ public with sharing class MatchManagementService {
 
         if(deckCardPutInField.PlayerCard__r.Card__r.Type__c == 'Monster' && deckCardPutInField.PlayerCard__r.Card__r.EnergyCost__c > 0) {
             this.matchManagement.consumeEnergy(playerLoginCode, matchId, deckCardPutInField.PlayerCard__r.Card__r.EnergyCost__c);
-            this.matchManagement.createMatchEvent(player, matchId, player.Name + ': Spent an Energy to summon ' + deckCardPutInField.PlayerCard__r.Card__r.Name);
+            //this.matchManagement.createMatchEvent(player, matchId, player.Name + ': Spent an Energy to summon ' + deckCardPutInField.PlayerCard__r.Card__r.Name);
         }
     }
 

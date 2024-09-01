@@ -101,7 +101,7 @@ body* > {
     margin: 0 auto;
     border-radius: 25px;
     box-sizing: border-box;
-    box-shadow: -8px 9px 16px -3px gray;
+    box-shadow: 7px 10px 5px 0px rgba(0, 0, 0, 0.75);
     background: #171314;
     text-align: left;
     text-shadow: 
@@ -109,6 +109,11 @@ body* > {
         1px -1px 0 #fff, 
         -1px 1px 0 #fff, 
         1px 1px 0 #fff;  
+    transition: box-shadow 0.3s ease-in-out;
+}
+
+.card-container:hover {
+    box-shadow: 70px 100px 15px -40px rgba(0,0,0,0.75);
 }
  .card-background {
     height: 94%;
@@ -198,10 +203,9 @@ body* > {
 }
 
 .frame-art {
-    margin: 0 10px; 
+    margin: 0 10px;
     margin: 7px 10px 0 10px;
-    height: 120px;
-    max-height: 120px;
+    max-height: 124px;
 }
 
 .set-icon {

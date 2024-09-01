@@ -16,7 +16,7 @@
                         </template>
                     </div>
                     <div class="battlefield">
-                        <div class="line">
+                        <div class="line line-effect">
                             <template for:each={enemyPlayerRowCards} for:item="enemyCardRowEffect">
                                 <template if:true={enemyCardRowEffect.isEnergy}>
                                     <template if:true={enemyCardRowEffect.hasCard}>
@@ -31,14 +31,14 @@
                                     <template if:false={enemyCardRowEffect.hasCard}>
                                         <div 
                                             key={enemyCardRowEffect.Id} 
-                                            class="card-battlefield-position"
+                                            class="card-battlefield-position card-battlefield-position-enemy"
                                         >
                                         </div>
                                     </template>
                                 </template>
                             </template>
                         </div>
-                        <div class="line">
+                        <div class="line line-creature">
                             <template for:each={enemyPlayerRowCards} for:item="enemyCardRowCreature">
                                 <template if:false={enemyCardRowCreature.isEnergy}>
                                     <template if:true={enemyCardRowCreature.hasCard}>
@@ -55,7 +55,7 @@
                                     <template if:false={enemyCardRowCreature.hasCard}>
                                         <div 
                                             key={enemyCardRowCreature.Id} 
-                                            class="card-battlefield-position"
+                                            class="card-battlefield-position card-battlefield-position-enemy"
                                         >
                                         </div>
                                     </template>
@@ -67,7 +67,7 @@
                                 <lightning-button variant="destructive" label="Direct Attack" title="Direct Attack" onclick={handleDirectAttack} class="slds-m-left_x-small"></lightning-button>
                             </div>
                         </template>
-                        <div class="line">
+                        <div class="line line-creature">
                             <template for:each={actualPlayerRowCards} for:item="cardRowCreature">
                                 <template if:false={cardRowCreature.isEnergy}>
                                     <template if:true={cardRowCreature.hasCard}>
@@ -84,7 +84,7 @@
                                     <template if:false={cardRowCreature.hasCard}>
                                         <div 
                                             key={cardRowCreature.Id} 
-                                            class="card-battlefield-position"
+                                            class="card-battlefield-position card-battlefield-position-player"
                                             data-id={cardRowCreature.Id}
                                             onclick={setCardOnCreatureSpot}
                                         >
@@ -93,7 +93,7 @@
                                 </template>
                             </template>
                         </div>
-                        <div class="line">
+                        <div class="line line-effect">
                             <template for:each={actualPlayerRowCards} for:item="cardRowEffect">
                                 <template if:true={cardRowEffect.isEnergy}>
                                     <template if:true={cardRowEffect.hasCard}>
@@ -108,7 +108,7 @@
                                     <template if:false={cardRowEffect.hasCard}>
                                         <div 
                                             key={cardRowEffect.Id} 
-                                            class="card-battlefield-position"
+                                            class="card-battlefield-position card-battlefield-position-player"
                                             data-id={cardRowEffect.Id}
                                             onclick={setCardOnEffectSpot}
                                         >
