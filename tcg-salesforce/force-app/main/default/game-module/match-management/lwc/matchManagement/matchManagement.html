@@ -46,7 +46,9 @@
                                             key={enemyCardRowCreature.Id}
                                             card-data={enemyCardRowCreature.Deckcard__r.PlayerCard__r.Card__r}
                                             data-id={enemyCardRowCreature.Deckcard__c}
+                                            data-rowid={enemyCardRowCreature.Id}
                                             class="card-size enemy-card"
+                                            onclick={setSelectedTarget}
                                         >
                                         </c-card-render>
                                     </template>
@@ -128,6 +130,11 @@
                                 onclick={setSelectedCard}
                             >
                             </c-card-render>
+                        </template>
+                    </div>
+                    <div class="end-turn-button">
+                        <template if:true={canPlay}>
+                            <lightning-button variant="destructive" label="End turn" title="End turn" onclick={handleEndTurn} class="slds-m-left_x-small"></lightning-button>
                         </template>
                     </div>
                 </div>

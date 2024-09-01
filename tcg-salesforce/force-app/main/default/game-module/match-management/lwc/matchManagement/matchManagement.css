@@ -132,3 +132,8 @@
     left: 32px;
     top: 42px;
 }
+
+.end-turn-button {
+    justify-content: flex-end;
+    display: flex;
+}

@@ -5,6 +5,7 @@ public with sharing class MatchManagementRepository {
                 Id,
                 PlayerCard__r.Card__c,
                 Name,
+                PlayerCard__r.Card__r.Name,
                 PlayerCard__r.Card__r.Attack__c,
                 PlayerCard__r.Card__r.Defense__c,
                 PlayerCard__r.Card__r.Description__c,
@@ -39,6 +40,22 @@ public with sharing class MatchManagementRepository {
         ];
     }
 
+    public List<RowCard__c> getCardRowsByDeckCardId(String matchId, String deckCardId) {
+        return [
+            SELECT
+                Id,
+                DeckCard__c,
+                DeckCard__r.PlayerCard__r.Card__r.Name,
+                Deckcard__r.PlayerCard__r.Player__c
+            FROM
+                RowCard__c
+            WHERE
+                DeckCard__c =: deckCardId
+                AND
+                BattlefieldRow__r.Match__c =: matchId
+        ];
+    }
+
     public List<DeckCard__c> getPlayerAvailableDeckCards(Id deckId, Set<Id> deckCardsUsed) {
         return [
             SELECT
@@ -53,7 +70,8 @@ public with sharing class MatchManagementRepository {
                 PlayerCard__r.Card__r.Type__c,
                 PlayerCard__r.Card__r.EnergyCost__c,
                 PlayerCard__r.Card__r.RarityColor__c,
-                Deck__r.Player__r.LoginCode__c
+                Deck__r.Player__r.LoginCode__c,
+                Deck__r.Player__c
             FROM
                 DeckCard__c
             WHERE
@@ -159,7 +177,9 @@ public with sharing class MatchManagementRepository {
                 PlayerOne__c,
                 PlayerTwo__c,
                 PlayerOne__r.LoginCode__c,
-                PlayerTwo__r.LoginCode__c
+                PlayerTwo__r.LoginCode__c,
+                Turn__c,
+                StartingMatchPlayer__c
             FROM
                 Match__c
             WHERE

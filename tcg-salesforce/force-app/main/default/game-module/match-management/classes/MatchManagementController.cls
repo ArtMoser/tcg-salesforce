@@ -29,4 +29,25 @@ public with sharing class MatchManagementController {
     public static void causeDirectDamage(Integer damage, String matchId, String playerLoginCode){
         MatchManagementService.getInstance().causeDirectDamage(damage, matchId, playerLoginCode);
     }
+
+    @AuraEnabled
+    public static void destroyEnemyCardAndCauseDirectDamage(String playerLoginCode, Integer damage, String enemyDeckCardIdToDestroy, String matchId) {
+        MatchManagementService.getInstance().destroyEnemyCardAndCauseDirectDamage(playerLoginCode, damage, enemyDeckCardIdToDestroy, matchId);
+    }
+
+    @AuraEnabled
+    public static void destroyPlayerCard(String playerLoginCode, String playerDeckCardIdToDestroy, String matchId) {
+        MatchManagementService.getInstance().destroyPlayerCard(playerLoginCode, playerDeckCardIdToDestroy, matchId);
+    }
+
+    @AuraEnabled
+    public static void destroyPlayerAndEnemyCard(String playerLoginCode, String playerDeckCardIdToDestroy, String enemyDeckCardIdToDestroy, String matchId) {
+        MatchManagementService.getInstance().destroyPlayerAndEnemyCard(playerLoginCode, playerDeckCardIdToDestroy, enemyDeckCardIdToDestroy, matchId);
+        
+    }
+
+    @AuraEnabled
+    public static void endTurn(String playerLoginCode, String matchId) {
+        MatchManagementService.getInstance().endTurnAndDrawCard(playerLoginCode, matchId);
+    }
 }

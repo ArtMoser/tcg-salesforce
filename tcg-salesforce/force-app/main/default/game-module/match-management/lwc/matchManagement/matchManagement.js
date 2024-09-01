@@ -5,6 +5,10 @@ import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 import getAllMatchData from '@salesforce/apex/MatchManagementController.getAllMatchData';
 import upadateRowCard from '@salesforce/apex/MatchManagementController.upadateRowCard';
 import causeDirectDamage from '@salesforce/apex/MatchManagementController.causeDirectDamage';
+import destroyEnemyCardAndCauseDirectDamage from '@salesforce/apex/MatchManagementController.destroyEnemyCardAndCauseDirectDamage';
+import destroyPlayerCard from '@salesforce/apex/MatchManagementController.destroyPlayerCard';
+import destroyPlayerAndEnemyCard from '@salesforce/apex/MatchManagementController.destroyPlayerAndEnemyCard';
+import endTurn from '@salesforce/apex/MatchManagementController.endTurn';
 
 export default class MatchManagement extends LightningElement {
     @api playerLoginCode = '123';
@@ -65,6 +69,7 @@ export default class MatchManagement extends LightningElement {
 
         this.selectedTargetCard = '';
         this.enableDirectAttack = false;
+        this.canPlay = false;
 
         this.setPlayerCards();
         this.setPlayersRowCards();
@@ -78,9 +83,7 @@ export default class MatchManagement extends LightningElement {
         this.setAvailableEnergy();
 
         //TODO: When a card is clicked, highlighted it and the spaces on field that it's possible to set
-        //TODO: Implement the card Attack to other card
-        //TODO: Implement the card direct attck
-        //TODO: Implement a logic to identify turn change
+
     }
 
     setPlayerCards() {
@@ -124,10 +127,11 @@ export default class MatchManagement extends LightningElement {
 
     setCanPlay() {
         let firstPlayerToPlay = this.identifyPlayer();
-        if(firstPlayerToPlay && this.match.Turn__c == 0 || 
-            (firstPlayerToPlay && this.match.Turn__c > 0 && !this.identfyTurnIsOdd()) || 
+        if((firstPlayerToPlay && !this.identfyTurnIsOdd()) || 
             !firstPlayerToPlay && this.identfyTurnIsOdd()) {
             this.canPlay = true;
+        } else {
+            this.canPlay = false;
         }
     }
 
@@ -136,9 +140,14 @@ export default class MatchManagement extends LightningElement {
     }
 
     identifyPlayer() {
-        if(this.player.LoginCode__c == this.match.PlayerOne__r.LoginCode__c) {
+        if(this.player.LoginCode__c == this.match.PlayerOne__r.LoginCode__c && this.match.StartingMatchPlayer__c == 'Player One') {
             return true;
         }
+
+        if(this.player.LoginCode__c == this.match.PlayerTwo__r.LoginCode__c && this.match.StartingMatchPlayer__c == 'Player Two') {
+            return true;
+        }
+
         return false;
     }
 
@@ -170,8 +179,33 @@ export default class MatchManagement extends LightningElement {
         });
     }
 
-    generateEvent() {
+    setSelectedTarget(event) {
+        if(!this.canPlay) {
+            return;
+        }
 
+        let deckCardId = event.currentTarget.dataset.id;
+        let rowId = event.currentTarget.dataset.rowid;
+
+        for(let rowCard of this.enemyPlayerRowCards) {
+            if(rowCard.Id == rowId && deckCardId ) {
+                if(this.selectedTargetCard == deckCardId) {
+                    this.selectedTargetCard = '';
+                    rowCard.isSelected = false;
+                    break;
+                }
+
+                this.selectedTargetCard = deckCardId;
+                rowCard.isSelected = true;
+
+                if(!this.selectedDeckCardId) {
+                    this.showToast('Select which card will attack this one');
+                    break;
+                }
+                
+                this.performAttackToMonster();
+            }
+        }
     }
 
     setSlectedCardToAct(event) {
@@ -185,7 +219,20 @@ export default class MatchManagement extends LightningElement {
         for(let rowCard of this.actualPlayerRowCards) {
             if(rowCard.Id == rowId && deckCardId ) {
                 if(!rowCard.alreadyAttacked) {
+                    if(this.selectedDeckCardId == deckCardId) {
+                        this.selectedDeckCardId = '';
+                        rowCard.isSelected = false;
+                        break;
+                    }
+
                     this.selectedDeckCardId = deckCardId;
+                    rowCard.isSelected = true;
+
+                    if(this.selectedTargetCard) {
+                        this.performAttackToMonster();
+                        break;
+                    }
+
                     this.checkEnableDirectAttack();
                     break;
                 } else {
@@ -193,6 +240,62 @@ export default class MatchManagement extends LightningElement {
                     break;
                 }
             }
+        }
+    }
+
+    performAttackToMonster() {
+        let actualPlayerAttackCard;
+        let enemyPlayerTargetCard;
+
+        for(let rowCard of this.actualPlayerRowCards) {
+            if(rowCard.Deckcard__c == this.selectedDeckCardId) {
+                actualPlayerAttackCard = rowCard.Deckcard__r.PlayerCard__r.Card__r;
+                break;
+            }
+        }
+
+        for(let rowCard of this.enemyPlayerRowCards) {
+            if(rowCard.Deckcard__c == this.selectedTargetCard) {
+                enemyPlayerTargetCard = rowCard.Deckcard__r.PlayerCard__r.Card__r;
+                break;
+            }
+        }
+
+        if(actualPlayerAttackCard.Attack__c > enemyPlayerTargetCard.Defense__c) {
+            destroyEnemyCardAndCauseDirectDamage({
+                playerLoginCode: this.playerLoginCode,
+                damage: (actualPlayerAttackCard.Attack__c - enemyPlayerTargetCard.Defense__c),
+                enemyDeckCardIdToDestroy: this.selectedTargetCard,
+                matchId: this.match.Id
+            }).then(response => {
+                console.log(response);
+            })
+            .catch(error => {
+                console.log(error);
+            });
+        } else if(enemyPlayerTargetCard.Defense__c > actualPlayerAttackCard.Attack__c) {
+            destroyPlayerCard({
+                playerLoginCode: this.playerLoginCode,
+                playerDeckCardIdToDestroy: this.selectedDeckCardId,
+                matchId: this.match.Id
+            }).then(response => {
+                console.log(response);
+            })
+            .catch(error => {
+                console.log(error);
+            });
+        } else {
+            destroyPlayerAndEnemyCard({
+                playerLoginCode: this.playerLoginCode,
+                playerDeckCardIdToDestroy: this.selectedDeckCardId,
+                enemyDeckCardIdToDestroy: this.selectedTargetCard,
+                matchId: this.match.Id
+            }).then(response => {
+                console.log(response);
+            })
+            .catch(error => {
+                console.log(error);
+            });
         }
     }
 
@@ -289,6 +392,18 @@ export default class MatchManagement extends LightningElement {
         }
 
         this.showToast('You cannot put an effect card on a creature card spot');
+    }
+
+    handleEndTurn() {
+        endTurn({
+            playerLoginCode: this.playerLoginCode,
+            matchId: this.match.Id
+        }).then(response => {
+            console.log(response);
+        })
+        .catch(error => {
+            console.log(error);
+        });
     }
 
     async sendSpotUpdatedToSalesforce(rowCardId) {

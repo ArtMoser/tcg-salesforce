@@ -13,18 +13,7 @@ public with sharing class MatchManagementService {
     }
 
     public List<DeckCard__c> getPlayerAvailableDeckCards(String playerLoginCode, String matchId) {
-        Set<Id> deckCardsUsed = new Set<Id>();
-        Contact player = this.utilRepository.getContactWithDecks(playerLoginCode);
-
-        Set<Id> deckCardsOnCemetery = this.repository.getPlayerDeckCardsOnCemetery(player, matchId);
-        Set<Id> deckCardsOnHand = this.repository.getPlayerDeckCardsOnHand(player, matchId);
-        Set<Id> deckCardsOnField = this.repository.getPlayerDeckCardsOnField(player, matchId);
-
-        for(Id deckCardId : deckCardsOnCemetery) { deckCardsUsed.add(deckCardId); }
-        for(Id deckCardId : deckCardsOnHand) { deckCardsUsed.add(deckCardId); }
-        for(Id deckCardId : deckCardsOnField) { deckCardsUsed.add(deckCardId); }
-
-        return this.repository.getPlayerAvailableDeckCards(player.SelectedDeck__c, deckCardsUsed);
+        return this.matchManagement.getPlayerAvailableDeckCards(playerLoginCode, matchId);
     }
 
     public Match__c getCurrentMatch(String playerLoginCode) {
@@ -85,5 +74,31 @@ public with sharing class MatchManagementService {
 
         this.matchManagement.causeDirectDamage(damage, matchId, playerLoginCode);
         this.matchManagement.createMatchEvent(player, matchId, player.Name + ': Directed attacked the enemy');
+    }
+    
+    public void destroyEnemyCardAndCauseDirectDamage(String playerLoginCode, Integer damage, String enemyDeckCardIdToDestroy, String matchId) {
+        Contact player = this.utilRepository.getContactWithDecks(playerLoginCode);
+        this.matchManagement.causeDirectDamage(damage, matchId, playerLoginCode);
+        this.matchManagement.sendDeckCardToCemetery(matchId, enemyDeckCardIdToDestroy);
+        this.matchManagement.createMatchEvent(player, matchId, player.Name + ': Destroyed a card and caused ' + damage + ' damage');
+    }
+
+    public void destroyPlayerCard(String playerLoginCode, String playerDeckCardIdToDestroy, String matchId) {
+        Contact player = this.utilRepository.getContactWithDecks(playerLoginCode);
+        this.matchManagement.sendDeckCardToCemetery(matchId, playerDeckCardIdToDestroy);
+        this.matchManagement.createMatchEvent(player, matchId, player.Name + ': Attacked a card but, ' + player.Name + '\'s card was destroyed');
+    }
+
+    public void destroyPlayerAndEnemyCard(String playerLoginCode, String playerDeckCardIdToDestroy, String enemyDeckCardIdToDestroy, String matchId) {
+        Contact player = this.utilRepository.getContactWithDecks(playerLoginCode);
+        this.matchManagement.sendDeckCardToCemetery(matchId, playerDeckCardIdToDestroy);
+        this.matchManagement.sendDeckCardToCemetery(matchId, enemyDeckCardIdToDestroy);
+        this.matchManagement.createMatchEvent(player, matchId, player.Name + ': Attacked a card but both were destroyed');
+    }
+
+    public void endTurnAndDrawCard(String playerLoginCode, String matchId) {
+        Contact player = this.utilRepository.getContactWithDecks(playerLoginCode);
+        this.matchManagement.endTurn(matchId);
+        this.matchManagement.createMatchEvent(player, matchId, player.Name + ': Finished the turn and the other player draw a card');
     }
 }
