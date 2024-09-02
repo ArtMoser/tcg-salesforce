@@ -50,4 +50,9 @@ public with sharing class MatchManagementController {
     public static void endTurn(String playerLoginCode, String matchId) {
         MatchManagementService.getInstance().endTurnAndDrawCard(playerLoginCode, matchId);
     }
+
+    @AuraEnabled
+    public static Boolean login(String playerLoginCode) {
+        return MatchManagementService.getInstance().login(playerLoginCode);
+    }
 }

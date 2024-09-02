@@ -200,9 +200,11 @@ public with sharing class MatchManagementRepository {
             FROM
                 Match__c
             WHERE
-                PlayerOne__r.LoginCode__c =: playerLoginCode
-                OR
-                PlayerTwo__r.LoginCode__c =: playerLoginCode
+                (PlayerOne__r.LoginCode__c =: playerLoginCode
+            OR
+                PlayerTwo__r.LoginCode__c =: playerLoginCode)
+            AND
+                Status__c = 'Ongoing'
         ];
     }
 

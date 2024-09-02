@@ -41,6 +41,7 @@
 		<name>PermissionSet</name>
 	</types>
 	<types>
+		<members>Contact</members>
 		<members>Card__c</members>
 		<members>Deck__c</members>
 		<members>Match__c</members>

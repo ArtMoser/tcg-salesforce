@@ -101,4 +101,9 @@ public with sharing class MatchManagementService {
         this.matchManagement.endTurn(matchId);
         this.matchManagement.createMatchEvent(player, matchId, player.Name + ': Finished the turn and the other player draw a card');
     }
+
+    public Boolean login(String playerLoginCode) {
+        Contact player = this.utilRepository.getContactWithDecks(playerLoginCode);
+        return player != null;
+    }
 }

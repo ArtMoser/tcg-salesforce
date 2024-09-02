@@ -2,9 +2,9 @@
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>MatchPlayerHand__c</fullName>
     <externalId>false</externalId>
-    <label>Match Player Hand</label>
+    <label>Match</label>
     <referenceTo>Match__c</referenceTo>
-    <relationshipLabel>Player Hands</relationshipLabel>
+    <relationshipLabel>Matche Player Hands</relationshipLabel>
     <relationshipName>PlayerHands</relationshipName>
     <relationshipOrder>0</relationshipOrder>
     <reparentableMasterDetail>false</reparentableMasterDetail>

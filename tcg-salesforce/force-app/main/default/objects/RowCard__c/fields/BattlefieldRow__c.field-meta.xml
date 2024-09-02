@@ -4,7 +4,6 @@
     <externalId>false</externalId>
     <label>Battlefield Row</label>
     <referenceTo>BattlefieldRow__c</referenceTo>
-    <relationshipLabel>Row Cards</relationshipLabel>
     <relationshipName>RowCards</relationshipName>
     <relationshipOrder>0</relationshipOrder>
     <reparentableMasterDetail>false</reparentableMasterDetail>

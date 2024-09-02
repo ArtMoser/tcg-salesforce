@@ -1,17 +1,53 @@
 <template>
     <div class="background">
         <lightning-tabset>
-            <lightning-tab label="Play">
-                <c-match-management
+            <template if:true={showLoginScreen}>
+                <c-match-finder
                     player-login-code={playerLoginCode}
-                ></c-match-management>
-            </lightning-tab>
-            <lightning-tab label="Deck Management">
-                <c-deck-management
-                    player-login-code={playerLoginCode}
-                >
-                </c-deck-management>
-            </lightning-tab>
+                ></c-match-finder>
+                <!--<lightning-tab label="Login">
+                    <div class="login-container">
+                        <div class="login-box">
+                            <h2>Login</h2>
+                            <lightning-input 
+                                label="Access Code" 
+                                type="text" 
+                                placeholder="Type your access code"
+                                onchange={handleCodeChange}
+                                value={playerLoginCode}
+                                class="login-button-spacing">
+                            </lightning-input>
+                            <lightning-button 
+                                label="Login" 
+                                variant="brand" 
+                                onclick={handleLogin}>
+                            </lightning-button>
+                        </div>
+                    </div>
+                </lightning-tab>-->
+            </template>
+            <template if:false={showLoginScreen}>
+                <template if:true={showMatchesScreen}>
+                    <lightning-tab label="Find A Match">
+                        <c-match-finder
+                            player-login-code={playerLoginCode}
+                        ></c-match-finder>
+                    </lightning-tab>
+                </template>
+                <template if:true={showPlayScreen}>
+                    <lightning-tab label="Play">
+                        <c-match-management
+                            player-login-code={playerLoginCode}
+                        ></c-match-management>
+                    </lightning-tab>
+                </template>
+                <lightning-tab label="Deck Management">
+                    <c-deck-management
+                        player-login-code={playerLoginCode}
+                    >
+                    </c-deck-management>
+                </lightning-tab>
+            </template>
         </lightning-tabset>
     </div>
 </template>

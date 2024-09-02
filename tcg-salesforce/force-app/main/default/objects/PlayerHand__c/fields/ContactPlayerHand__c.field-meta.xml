@@ -4,7 +4,6 @@
     <externalId>false</externalId>
     <label>Contact Player Hand</label>
     <referenceTo>Contact</referenceTo>
-    <relationshipLabel>Player Hands</relationshipLabel>
     <relationshipName>PlayerHands</relationshipName>
     <relationshipOrder>1</relationshipOrder>
     <reparentableMasterDetail>false</reparentableMasterDetail>

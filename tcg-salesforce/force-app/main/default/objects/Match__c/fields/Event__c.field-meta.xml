@@ -7,9 +7,8 @@
     <trackTrending>false</trackTrending>
     <type>Picklist</type>
     <valueSet>
-        <restricted>true</restricted>
         <valueSetDefinition>
-            <sorted>true</sorted>
+            <sorted>false</sorted>
             <value>
                 <fullName>Attack</fullName>
                 <default>false</default>
@@ -26,9 +25,9 @@
                 <label>End turn</label>
             </value>
             <value>
-                <fullName>Monster destroyed</fullName>
+                <fullName>Set card</fullName>
                 <default>false</default>
-                <label>Monster destroyed</label>
+                <label>Set card</label>
             </value>
             <value>
                 <fullName>Put card on field</fullName>
@@ -36,9 +35,9 @@
                 <label>Put card on field</label>
             </value>
             <value>
-                <fullName>Set card</fullName>
+                <fullName>Monster destroyed</fullName>
                 <default>false</default>
-                <label>Set card</label>
+                <label>Monster destroyed</label>
             </value>
         </valueSetDefinition>
     </valueSet>

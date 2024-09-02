@@ -44,8 +44,7 @@
     flex: 1;
     display: flex;
     justify-content: space-between;
-    padding: 80px;
-    border: dotted #a18b7787;
+    padding: 10px;
 }
 
 .hand-zone {

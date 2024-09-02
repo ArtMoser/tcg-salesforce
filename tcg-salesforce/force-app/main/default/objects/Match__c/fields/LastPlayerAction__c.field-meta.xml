@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
-    <fullName>DeckCard__c</fullName>
+    <fullName>LastPlayerAction__c</fullName>
     <deleteConstraint>SetNull</deleteConstraint>
     <externalId>false</externalId>
-    <label>Deck Card</label>
-    <referenceTo>DeckCard__c</referenceTo>
-    <relationshipName>MatchCemeteries</relationshipName>
+    <label>Last player action</label>
+    <referenceTo>Contact</referenceTo>
+    <relationshipLabel>Matches (Last player action)</relationshipLabel>
+    <relationshipName>Matches</relationshipName>
     <required>false</required>
     <trackTrending>false</trackTrending>
     <type>Lookup</type>

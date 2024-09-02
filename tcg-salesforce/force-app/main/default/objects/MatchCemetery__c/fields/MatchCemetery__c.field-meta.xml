@@ -4,7 +4,6 @@
     <externalId>false</externalId>
     <label>Match Cemetery</label>
     <referenceTo>Match__c</referenceTo>
-    <relationshipLabel>Match Cemeteries</relationshipLabel>
     <relationshipName>MatchCemeteries</relationshipName>
     <relationshipOrder>0</relationshipOrder>
     <reparentableMasterDetail>false</reparentableMasterDetail>

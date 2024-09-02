@@ -4,7 +4,6 @@
     <externalId>false</externalId>
     <label>PlayerCemetery</label>
     <referenceTo>Contact</referenceTo>
-    <relationshipLabel>Match Cemeteries</relationshipLabel>
     <relationshipName>PlayerCemeteries</relationshipName>
     <relationshipOrder>1</relationshipOrder>
     <reparentableMasterDetail>false</reparentableMasterDetail>
