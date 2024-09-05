@@ -14,7 +14,7 @@
     flex-direction: column;
     box-shadow: 7px 10px 5px 0px rgba(0, 0, 0, 0.75);
     transform: scale(0.7);
-    transform: perspective(113em) rotateX(45deg) scale(0.7);
+    transform: perspective(113em) rotateX(45deg) scale(0.8);
     margin-top: -10%;
 }
 
@@ -167,4 +167,75 @@
 
 .line-creature {
     /* background-color: #3498db; */
+}
+
+.player-card {
+    background-color: #fefefe;
+    border: 1px solid #000;
+    width: 220px;
+    padding: 20px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.9);
+    border-radius: 10px;
+    text-align: center;
+    position: absolute;
+}
+
+.left {
+    left: 3%;
+    top: 71%;
+    background-color: #00387dc9;
+    color: #fff
+}
+
+.right {
+    right: 13%;
+    top: 17%;
+    background-color: #6b0000d6;
+    color: #fff
+}
+
+.player-info {
+    margin-top: 10px;
+}
+
+.player-name {
+    font-size: 24px;
+    margin: 0;
+}
+
+.player-life {
+    margin-top: 20px;
+    font-size: 18px;
+}
+
+.life-points {
+    font-weight: bold;
+    font-size: 24px;
+    color: #00e85dad;
+}
+
+.slds-modal__container {
+    width: 50%;
+    max-width: 600px;
+}
+
+.slds-modal__header_winner {
+    background-color: #4CAF50;
+}
+
+.slds-modal__header {
+    color: white;
+}
+
+.slds-modal__header_loser {
+    background-color: #5e0101;
+}
+
+.slds-modal__footer {
+    text-align: center;
+}
+
+.slds-modal__content p {
+    font-size: 18px;
+    text-align: center;
 }

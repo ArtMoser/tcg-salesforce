@@ -32,9 +32,15 @@ public with sharing class MatchManagement {
     }
 
     public void createMatchEvent(Contact player, String matchId, String event) {
-        update this.factory.updateMatchEvent(player, matchId, event);
-
         Match__c match = this.repository.getMatchById(matchId);
+        match.LastPlayerAction__c = player.Id;
+        match.Event__c = event;
+        match.MatchEvents__c += event + '|';
+        update match;
+        //Match__c matchToUpdate = this.factory.updateMatchEvent(player, matchId, event);
+
+        
+        
 
         MatchUpdate__e matchUpdateEvent = new MatchUpdate__e();
         matchUpdateEvent.MatchId__c = matchId;

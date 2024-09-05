@@ -7,6 +7,18 @@ public with sharing class MatchFinderService {
         return matchFinderServiceInstance;
     }
 
+    public void enterMatch(String matchId, String playerLoginCode) {
+        Contact player = this.utilRepository.getContactWithDecks(playerLoginCode);
+        Match__c match = new Match__c();
+        match.Id = matchId;
+        match.PlayerTwo__c = player.Id;
+        update match;
+
+        MatchStart__e matchStartEvent = new MatchStart__e();
+        matchStartEvent.MatchId__c = matchId;
+        EventBus.publish(matchStartEvent);
+    }           
+
     public List<Match__c> getAllWaitingMatches() {
         return this.repository.getMatchesByStatus('Waiting');
     }

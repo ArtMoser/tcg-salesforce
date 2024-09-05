@@ -38,6 +38,10 @@ public with sharing class MatchService {
                 match.Status__c = 'Ongoing';
             }
 
+            if(match.StartingMatchPlayer__c != null) {
+                continue;
+            }
+
             if(match.PlayerTwo__c != null && match.PlayerOne__c != null && match.Status__c == 'Ongoing') {
                 Integer startingPlayer = this.util.getRandomPlayerByNumber();
     
@@ -88,5 +92,23 @@ public with sharing class MatchService {
 
         this.match.setDeckCardsAsNotUsed(playersIds);
 
+    }
+
+    public void defineWinnerPlayer(List<Match__c> newMatches, Map<Id, Match__c> oldMatches) {
+        for(Match__c match : newMatches) {
+            if(match.Status__c != 'Ongoing') { continue;}
+
+            if(match.LifePointsPlayerOne__c <= 0) {
+                match.Winner__c = match.PlayerTwo__c;
+                //match.Status__c = 'Finished';
+                continue;
+            }
+
+            if(match.LifePointsPlayerOne__c <= 0) {
+                match.Winner__c = match.PlayerTwo__c;
+                //match.Status__c = 'Finished';
+                continue;
+            }
+        }
     }
 }

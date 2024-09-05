@@ -1,5 +1,64 @@
 <template>
+    <template if:true={showWinnerModal}>
+        <div class="slds-modal slds-fade-in-open">
+            <div class="slds-modal__container">
+                <template if:true={isWinner}>
+                    <header class="slds-modal__header slds-modal__header_winner">
+                        <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close" onclick={closeModal}>
+                            <lightning-icon icon-name="utility:close" alternative-text="close" size="small"></lightning-icon>
+                            <span class="slds-assistive-text">Close</span>
+                        </button>
+                        <h2 class="slds-text-heading_medium">Congratulations</h2>
+                    </header>
+                </template>
+                <template if:false={isWinner}>
+                    <header class="slds-modal__header slds-modal__header_loser">
+                        <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close" onclick={closeModal}>
+                            <lightning-icon icon-name="utility:close" alternative-text="close" size="small"></lightning-icon>
+                            <span class="slds-assistive-text">Close</span>
+                        </button>
+                        <h2 class="slds-text-heading_medium">...</h2>
+                    </header>
+                </template>
+                <template if:true={isWinner}>
+                    <div class="slds-modal__content slds-p-around_medium">
+                        <p>You win!</p>
+                    </div>
+                </template>
+                <template if:false={isWinner}>
+                    <div class="slds-modal__content slds-p-around_medium">
+                        <p>You lose!</p>
+                    </div>
+                </template>
+                <footer class="slds-modal__footer">
+                    <button class="slds-button slds-button_neutral" onclick={closeModal}>Close</button>
+                </footer>
+            </div>
+        </div>
+        <div class="slds-backdrop slds-backdrop_open" if:true={isModalOpen}></div>
+    </template>
+    
     <div class="container">
+        <template if:true={match}>
+            <div class="player-card left">
+                <div class="player-info">
+                    <h2 class="player-name">{actualPlayerName}</h2>
+                    <div class="player-life">
+                        <span>Life Points:</span>
+                        <span class="life-points">{lifePointsActualPlayer}</span>
+                    </div>
+                </div>
+            </div>
+            <div class="player-card right">
+                <div class="player-info">
+                    <h2 class="player-name">{enemyPlayerName}</h2>
+                    <div class="player-life">
+                        <span>Life Points:</span>
+                        <span class="life-points">{lifePointsenemyPlayer}</span>
+                    </div>
+                </div>
+            </div>
+        </template>
         <div class="board">
             <div class="play-area">
                 <div class="hand-zone">
@@ -134,7 +193,7 @@
                     </div>
                     <div class="end-turn-button">
                         <template if:true={canPlay}>
-                            <lightning-button variant="destructive" label="End turn" title="End turn" onclick={handleEndTurn} class="slds-m-left_x-small"></lightning-button>
+                            <lightning-button variant="destructive" label="End turn" title="End turn" onclick={handleEndTurn} disabled={disableButton} class="slds-m-left_x-small"></lightning-button>
                         </template>
                     </div>
                 </div>

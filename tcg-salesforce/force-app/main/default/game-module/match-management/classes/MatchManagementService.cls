@@ -20,6 +20,10 @@ public with sharing class MatchManagementService {
         return this.repository.getMatchByPLayerCode(playerLoginCode);
     }
 
+    public Match__c getCurrentMatchById(String matchId) {
+        return this.repository.getMatchByMatchId(matchId);
+    }
+
     public void savePlayerHand(List<PlayerHand__c> playerHands) {
         insert playerHands;
     }
@@ -100,6 +104,11 @@ public with sharing class MatchManagementService {
         Contact player = this.utilRepository.getContactWithDecks(playerLoginCode);
         this.matchManagement.endTurn(matchId);
         this.matchManagement.createMatchEvent(player, matchId, player.Name + ': Finished the turn and the other player draw a card');
+    }
+
+    public void finishMatch(String matchId) {
+        Match__c match = new Match__c(Id = matchId, Status__c = 'Finished');
+        update match;
     }
 
     public Boolean login(String playerLoginCode) {

@@ -4,7 +4,7 @@ import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 import login from '@salesforce/apex/MatchManagementController.login';
 
 export default class Game extends LightningElement {
-    @track playerLoginCode = '123';
+    @track playerLoginCode = '';
     @track showLoginScreen = true;
     @track showMatchesScreen = false;
     @track showPlayScreen = false;
@@ -41,7 +41,12 @@ export default class Game extends LightningElement {
         login({
             playerLoginCode: this.playerLoginCode
         }).then(response => {
-            if(response) {
+            if(response.successfulLogin) {
+                if(!response.match) {
+                    this.handleShowScreen(false, false, true);
+                    return;
+                }
+
                 this.handleShowScreen(false, true, false);
             } else {
                 this.showToast('User not found!', 'Verify if your code is correct', 'error');
@@ -60,5 +65,13 @@ export default class Game extends LightningElement {
             message: messageValue,
         });
         this.dispatchEvent(event);
+    }
+
+    redirectStartMatch() {
+        this.handleShowScreen(false, false, true);
+    }
+
+    redirectMatchesScreen() {
+        this.handleShowScreen(false, true, false);
     }
 }

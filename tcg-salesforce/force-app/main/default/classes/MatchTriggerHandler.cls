@@ -4,6 +4,7 @@ public with sharing class MatchTriggerHandler extends TriggerHandlerAbstract {
     public override void runBeforeUpdate() {
         if(!Trigger.isBefore || !Trigger.isUpdate) { return; }
         service.updateStatusToOnGoing(Trigger.new, (Map<Id, Match__c>) Trigger.oldMap);
+        service.defineWinnerPlayer(Trigger.new, (Map<Id, Match__c>) Trigger.oldMap);
     }
 
     public override void runBeforeInsert() {

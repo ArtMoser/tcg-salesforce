@@ -4,8 +4,17 @@ public with sharing class MatchManagementController {
     public static MatchManagementFactory.MatchData getAllMatchData(String playerLoginCode, String matchId) {
         MatchManagementFactory.MatchData matchData = new MatchManagementFactory.MatchData();
         matchData.player = MatchManagementService.getInstance().getPlayer(playerLoginCode);
-        matchData.match = MatchManagementService.getInstance().getCurrentMatch(playerLoginCode);
-        matchId = matchData.match.Id;
+
+        if(matchId != null) {
+            matchData.match = MatchManagementService.getInstance().getCurrentMatchById(matchId);
+        } else {
+            matchData.match = MatchManagementService.getInstance().getCurrentMatch(playerLoginCode);
+        }
+
+        if(matchData.match != null) {
+            matchId = matchData.match.Id;
+        }
+
         matchData.deckCards = MatchManagementService.getInstance().getPlayerAvailableDeckCards(playerLoginCode, matchId);
         matchData.playersHands = MatchManagementService.getInstance().getPlayersHands(playerLoginCode, matchId);
         matchData.rowCards = MatchManagementService.getInstance().getAllRowCards(matchId);
@@ -52,7 +61,18 @@ public with sharing class MatchManagementController {
     }
 
     @AuraEnabled
-    public static Boolean login(String playerLoginCode) {
-        return MatchManagementService.getInstance().login(playerLoginCode);
+    public static void finishMatch(String matchId) {
+        MatchManagementService.getInstance().finishMatch(matchId);
+    }
+
+    @AuraEnabled
+    public static MatchManagementFactory.LoginData login(String playerLoginCode) {
+        Match__c ongoingMatch = MatchManagementService.getInstance().getCurrentMatch(playerLoginCode);
+
+        MatchManagementFactory.LoginData loginData = new MatchManagementFactory.LoginData();
+        loginData.match = ongoingMatch;
+        loginData.successfulLogin = MatchManagementService.getInstance().login(playerLoginCode);
+
+        return loginData;
     }
 }

@@ -179,7 +179,8 @@ public with sharing class MatchManagementRepository {
                 PlayerOne__r.LoginCode__c,
                 PlayerTwo__r.LoginCode__c,
                 Turn__c,
-                StartingMatchPlayer__c
+                StartingMatchPlayer__c,
+                MatchEvents__c
             FROM
                 Match__c
             WHERE
@@ -188,15 +189,22 @@ public with sharing class MatchManagementRepository {
     }
 
     public Match__c getMatchByPLayerCode(String playerLoginCode) {
-        return [
+        List<Match__c> matches = [
             SELECT
                 Id,
                 PlayerOne__c,
                 PlayerTwo__c,
                 PlayerOne__r.LoginCode__c,
                 PlayerTwo__r.LoginCode__c,
+                PlayerOne__r.Name,
+                PlayerTwo__r.Name,
+                LifePointsPlayerOne__c,
+                LifePointsPlayerTwo__c,
                 StartingMatchPlayer__c,
-                Turn__c
+                Turn__c,
+                MatchEvents__c,
+                Winner__c,
+                Status__c
             FROM
                 Match__c
             WHERE
@@ -206,6 +214,42 @@ public with sharing class MatchManagementRepository {
             AND
                 Status__c = 'Ongoing'
         ];
+
+        if(matches.isEmpty()) {
+            return null;
+        }
+
+        return matches.get(0);
+    }
+
+    public Match__c getMatchByMatchId(String matchId) {
+        List<Match__c> matches = [
+            SELECT
+                Id,
+                PlayerOne__c,
+                PlayerTwo__c,
+                PlayerOne__r.LoginCode__c,
+                PlayerTwo__r.LoginCode__c,
+                PlayerOne__r.Name,
+                PlayerTwo__r.Name,
+                LifePointsPlayerOne__c,
+                LifePointsPlayerTwo__c,
+                StartingMatchPlayer__c,
+                Turn__c,
+                MatchEvents__c,
+                Winner__c,
+                Status__c
+            FROM
+                Match__c
+            WHERE
+                Id =: matchId
+        ];
+
+        if(matches.isEmpty()) {
+            return null;
+        }
+
+        return matches.get(0);
     }
 
     public List<PlayerHand__c> getPlayersHands(String playerLoginCode, String matchId) {

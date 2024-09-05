@@ -9,6 +9,7 @@ import destroyEnemyCardAndCauseDirectDamage from '@salesforce/apex/MatchManageme
 import destroyPlayerCard from '@salesforce/apex/MatchManagementController.destroyPlayerCard';
 import destroyPlayerAndEnemyCard from '@salesforce/apex/MatchManagementController.destroyPlayerAndEnemyCard';
 import endTurn from '@salesforce/apex/MatchManagementController.endTurn';
+import finishMatch from '@salesforce/apex/MatchManagementController.finishMatch';
 
 export default class MatchManagement extends LightningElement {
     @api playerLoginCode = '123';
@@ -21,6 +22,10 @@ export default class MatchManagement extends LightningElement {
     @track playersHands = [];
     @track canPlay = false;
     @track hideEnemyCards = true;
+    @track actualPlayerName = '';
+    @track enemyPlayerName = '';;
+    @track lifePointsActualPlayer = 20;
+    @track lifePointsenemyPlayer = 20;
 
     @track actualPlayerHand = [];
     @track enemyPlayerHand = [];
@@ -34,17 +39,23 @@ export default class MatchManagement extends LightningElement {
     @track selectedActDeckCardId = '';
     @track selectedTargetCard = '';
     @track enableDirectAttack = false;
+    @track showWinnerModal = false;
+    @track isWinner = false;
+    @track disableButton = false;
+    @track cardsThatActed = [];
 
     channelName = '/event/MatchUpdate__e';
 
     connectedCallback() {
         this.initMatchManagement();
-        this.registerSubscribe();        
+        this.registerSubscribe();
     }
 
     registerSubscribe() {
         const messageCallback = (response) => {
+            if(response.data.payload.MatchId__c == this.match.Id) {
             this.initMatchManagement();
+            }
             console.log('New message received: ', JSON.stringify(response));
         }
 
@@ -53,14 +64,36 @@ export default class MatchManagement extends LightningElement {
         })
     }
 
+    async closeModal() {
+        await finishMatch({matchId : this.match.Id});
+        this.dispatchEvent(new CustomEvent('matchnotexistevent'));
+    }
+
     async initMatchManagement() {
         let matchData = await getAllMatchData({playerLoginCode : this.playerLoginCode, matchId : this.match.Id});
+
+        if(!matchData.match) {
+            this.dispatchEvent(new CustomEvent('matchnotexistevent'));
+        }
+
         this.match = matchData.match;
         this.player = matchData.player;
         this.playerDeckCards = matchData.deckCards;
         this.playersHands = matchData.playersHands;
         this.rowCards = matchData.rowCards;
         this.matchCemetery = matchData.matchCemetery;
+
+        if(this.player.Id == this.match.PlayerOne__c) {
+            this.actualPlayerName = this.match.PlayerOne__r.Name;    
+            this.enemyPlayerName = this.match.PlayerTwo__r.Name;
+            this.lifePointsActualPlayer = this.match.LifePointsPlayerOne__c;
+            this.lifePointsenemyPlayer = this.match.LifePointsPlayerTwo__c;
+        } else {
+            this.actualPlayerName = this.match.PlayerTwo__r.Name;
+            this.enemyPlayerName = this.match.PlayerOne__r.Name;
+            this.lifePointsActualPlayer = this.match.LifePointsPlayerTwo__c;
+            this.lifePointsenemyPlayer = this.match.LifePointsPlayerOne__c;
+        }
 
         this.actualPlayerHand = [];
         this.enemyPlayerHand = [];
@@ -71,6 +104,10 @@ export default class MatchManagement extends LightningElement {
         this.selectedTargetCard = '';
         this.enableDirectAttack = false;
         this.canPlay = false;
+        this.disableButton = false;
+
+        this.selectedDeckCardId= '';
+        this.selectedActDeckCardId = '';
 
         this.setPlayerCards();
         this.setPlayersRowCards();
@@ -78,13 +115,19 @@ export default class MatchManagement extends LightningElement {
         if(this.turn != this.match.Turn__c) {
             this.effectCardsSet = 0;
             this.turn = this.match.Turn__c;
+            this.cardsThatActed = [];
         }
 
         this.setCanPlay();
         this.setAvailableEnergy();
 
+        if(this.match.Winner__c != null) {
+            this.showWinnerModal = true;
+            if(this.match.Winner__c == this.player.Id) {
+                this.isWinner = true;
+            }
+        }
         //TODO: When a card is clicked, highlighted it and the spaces on field that it's possible to set
-
     }
 
     setPlayerCards() {
@@ -107,7 +150,7 @@ export default class MatchManagement extends LightningElement {
 
     setPlayersRowCards() {
         if(this.match.Turn__c != this.turn) {
-            this.selectedDeckCardId = '';
+            this.selectedActDeckCardId = '';
         }
 
         for(let rowCard of this.rowCards) {
@@ -115,8 +158,9 @@ export default class MatchManagement extends LightningElement {
             rowCard.hasCard = rowCard.Deckcard__c != null && rowCard.Deckcard__c != undefined;
 
             if(rowCard.BattlefieldRow__r.Player__r.LoginCode__c == this.player.LoginCode__c) {
-                if(this.match.Turn__c == this.turn && rowCard.Deckcard__c == this.selectedDeckCardId) {
+                if(this.match.Turn__c == this.turn && rowCard.Deckcard__c == this.selectedActDeckCardId) {
                     rowCard.alreadyAttacked = true;
+                    this.cardsThatActed.push(rowCard.Deckcard__c);
                 }
 
                 this.actualPlayerRowCards.push(rowCard);
@@ -199,7 +243,7 @@ export default class MatchManagement extends LightningElement {
                 this.selectedTargetCard = deckCardId;
                 rowCard.isSelected = true;
 
-                if(!this.selectedDeckCardId) {
+                if(!this.selectedActDeckCardId) {
                     this.showToast('Select which card will attack this one');
                     break;
                 }
@@ -218,8 +262,13 @@ export default class MatchManagement extends LightningElement {
         let rowId = event.currentTarget.dataset.rowid;
 
         for(let rowCard of this.actualPlayerRowCards) {
-            if(rowCard.Id == rowId && deckCardId ) {
-                if(!rowCard.alreadyAttacked) {
+            if(rowCard.Id == rowId && deckCardId) {
+                if(!rowCard.alreadyAttacked && !this.cardsThatActed.includes(deckCardId)) {
+                    if(this.cardsThatActed.includes(deckCardId)) {
+                        this.showToast('This card already attacked this turn');
+                        break;
+                    }
+
                     if(this.selectedActDeckCardId == deckCardId) {
                         this.selectedDeckCardId = '';
                         rowCard.isSelected = false;
@@ -261,6 +310,8 @@ export default class MatchManagement extends LightningElement {
                 break;
             }
         }
+
+        this.cardsThatActed.push(this.selectedActDeckCardId);
 
         if(actualPlayerAttackCard.Attack__c > enemyPlayerTargetCard.Defense__c) {
             destroyEnemyCardAndCauseDirectDamage({
@@ -317,6 +368,7 @@ export default class MatchManagement extends LightningElement {
         for(let rowCard of this.actualPlayerRowCards) {
             if(rowCard.Deckcard__c == this.selectedActDeckCardId) {
                 rowCard.alreadyAttacked = true;
+                this.cardsThatActed.push(rowCard.Deckcard__c);
                 damage += rowCard.Deckcard__r.PlayerCard__r.Card__r.Attack__c;
                 break;
             }
@@ -396,14 +448,17 @@ export default class MatchManagement extends LightningElement {
     }
 
     handleEndTurn() {
+        this.disableButton = true;
         endTurn({
             playerLoginCode: this.playerLoginCode,
             matchId: this.match.Id
         }).then(response => {
+            this.disableButton = false;
             console.log(response);
         })
         .catch(error => {
             console.log(error);
+            this.disableButton = false;
         });
     }
 

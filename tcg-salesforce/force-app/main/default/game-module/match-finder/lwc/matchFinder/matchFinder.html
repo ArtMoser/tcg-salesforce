@@ -21,6 +21,9 @@
         </section>
         <div class="slds-backdrop slds-backdrop_open"></div>
     </template>
+    <template if:true={isLoading}>
+        <lightning-spinner alternative-text="Loading" size="large"></lightning-spinner>
+    </template>
 
     <div class="list-container">
         <div class="button-container">

@@ -14,9 +14,18 @@ public with sharing class MatchManagementFactory {
         );
     }
 
+    public class LoginData {
+        @AuraEnabled
+        public Match__c match { get;set; }
+        @AuraEnabled
+        public Boolean successfulLogin { get;set; }
+    }
+
     public class MatchData {
         @AuraEnabled
         public Contact player { get;set; }
+        @AuraEnabled
+        public Contact playerTwo { get;set; }
         @AuraEnabled
         public Match__c match { get;set; }
         @AuraEnabled
