@@ -124,6 +124,21 @@ public with sharing class MatchManagement {
             if(!deckCards.isEmpty()) {
                 deckCard = deckCards.get(0);
             }
+        } else if(match.StartingMatchPlayer__c == 'Player Two' && isTurnEven) {
+            List<DeckCard__c> deckCards = this.getPlayerAvailableDeckCards(match.PlayerTwo__r.LoginCode__c, matchId);
+            if(!deckCards.isEmpty()) {
+                deckCard = deckCards.get(0);
+            }
+        } else if(match.StartingMatchPlayer__c == 'Player Two' && !isTurnEven) {
+            List<DeckCard__c> deckCards = this.getPlayerAvailableDeckCards(match.PlayerOne__r.LoginCode__c, matchId);
+            if(!deckCards.isEmpty()) {
+                deckCard = deckCards.get(0);
+            }
+        } else if(match.StartingMatchPlayer__c == 'Player One' && !isTurnEven) {
+            List<DeckCard__c> deckCards = this.getPlayerAvailableDeckCards(match.PlayerTwo__r.LoginCode__c, matchId);
+            if(!deckCards.isEmpty()) {
+                deckCard = deckCards.get(0);
+            }
         } else {
             List<DeckCard__c> deckCards = this.getPlayerAvailableDeckCards(match.PlayerTwo__r.LoginCode__c, matchId);
             if(!deckCards.isEmpty()) {
@@ -145,6 +160,7 @@ public with sharing class MatchManagement {
     public List<DeckCard__c> getPlayerAvailableDeckCards(String playerLoginCode, String matchId) {
         Set<Id> deckCardsUsed = new Set<Id>();
         Contact player = this.utilRepository.getContactWithDecks(playerLoginCode);
+        System.debug('###### player => ' + JSON.serialize(player));
 
         Set<Id> deckCardsOnCemetery = this.repository.getPlayerDeckCardsOnCemetery(player, matchId);
         Set<Id> deckCardsOnHand = this.repository.getPlayerDeckCardsOnHand(player, matchId);

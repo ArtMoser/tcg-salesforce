@@ -1,5 +1,5 @@
 <template>
-    <div class="card-container">
+    <div class="card-container" style={getBackgroundSelected}>
         <template if:true={hideCard}>
         </template>
         <template if:false={hideCard}>
@@ -14,7 +14,13 @@
                   </div>
             
                   <div class="frame-art" style="background-color:red;">
-                    <img src="https://picsum.photos/1280/720?random=1" alt="nissa art">
+                    <template if:false={imageUrl}>
+                        <img src="https://picsum.photos/1280/720?random=1" alt="nissa art">
+                    </template>
+                    <template if:true={imageUrl}>
+                        <img src={imageUrl} alt="nissa art">
+                    </template>
+                    
                   </div>
             
                   <div class="frame-text-box">
@@ -24,9 +30,9 @@
                   </div>
                   <template if:false={isEnergyCard}>
                       <div class="card-footer">
-                          <span class="card-attribute">Energy cost: {energyCost}</span>
-                          <span class="card-attribute">Attack: {attack}</span>
-                          <span class="card-attribute">Defense: {defense}</span>
+                          <span class="card-attribute energy-attribute">{energyCost}</span>
+                          <span class="card-attribute attack-attribute">{attack}</span>
+                          <span class="card-attribute defense-attribute">{defense}</span>
                       </div>
                   </template>
                 </div>

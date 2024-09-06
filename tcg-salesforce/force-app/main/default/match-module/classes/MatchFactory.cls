@@ -32,7 +32,7 @@ public with sharing class MatchFactory {
             }
 
             if(match.PlayerTwo__c != null) {
-                playersPerMatch.add(new PlayerMatch(match.Id, match.PlayerOne__c));
+                playersPerMatch.add(new PlayerMatch(match.Id, match.PlayerTwo__c));
             }
         }
 

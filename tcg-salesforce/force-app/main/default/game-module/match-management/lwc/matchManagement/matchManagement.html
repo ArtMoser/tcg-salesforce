@@ -39,6 +39,15 @@
     </template>
     
     <div class="container">
+        <div class="chat-container">
+            <div class="messages">
+                <template for:each={matchLog} for:item="log">
+                    <div class="message" key={log.key}>
+                        <span class="username">{log.key} {log.userEvent}:</span> {log.event}
+                    </div>
+                </template>
+            </div>
+        </div>
         <template if:true={match}>
             <div class="player-card left">
                 <div class="player-info">
@@ -104,9 +113,10 @@
                                         <c-card-render
                                             key={enemyCardRowCreature.Id}
                                             card-data={enemyCardRowCreature.Deckcard__r.PlayerCard__r.Card__r}
+                                            class="card-size enemy-card"
                                             data-id={enemyCardRowCreature.Deckcard__c}
                                             data-rowid={enemyCardRowCreature.Id}
-                                            class="card-size enemy-card"
+                                            is-highlighted={hightlightEnemyCreatureRow}
                                             onclick={setSelectedTarget}
                                         >
                                         </c-card-render>
@@ -136,6 +146,7 @@
                                             data-id={cardRowCreature.Deckcard__c}
                                             data-rowid={cardRowCreature.Id}
                                             class="card-size"
+                                            is-selected={cardRowCreature.isSelected}
                                             onclick={setSlectedCardToAct}
                                         >
                                         </c-card-render>
@@ -143,7 +154,7 @@
                                     <template if:false={cardRowCreature.hasCard}>
                                         <div 
                                             key={cardRowCreature.Id} 
-                                            class="card-battlefield-position card-battlefield-position-player"
+                                            class={getPlayerFieldCreatureRowClass}
                                             data-id={cardRowCreature.Id}
                                             onclick={setCardOnCreatureSpot}
                                         >
@@ -167,7 +178,7 @@
                                     <template if:false={cardRowEffect.hasCard}>
                                         <div 
                                             key={cardRowEffect.Id} 
-                                            class="card-battlefield-position card-battlefield-position-player"
+                                            class={getPlayerFieldEnnergyRowClass}
                                             data-id={cardRowEffect.Id}
                                             onclick={setCardOnEffectSpot}
                                         >
@@ -185,6 +196,7 @@
                                 data-id={playerCard.DeckCard__c}
                                 data-energy={playerCard.DeckCard__r.PlayerCard__r.Card__r.EnergyCost__c}
                                 data-type={playerCard.DeckCard__r.PlayerCard__r.Card__r.Type__c}
+                                is-selected={playerCard.isSelected}
                                 class="card-size"
                                 onclick={setSelectedCard}
                             >

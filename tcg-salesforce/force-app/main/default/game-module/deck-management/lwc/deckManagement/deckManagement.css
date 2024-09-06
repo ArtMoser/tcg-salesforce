@@ -74,6 +74,8 @@
     text-align: center;
     box-sizing: border-box;
     transition: transform 0.4s ease;
+    transform: scale(0.8);
+    width: 279px;
 }
 
 .block:hover {
@@ -111,4 +113,8 @@
     font-weight: 700;
     text-shadow: 2px 0 #fff, -2px 0 #fff, 0 2px #fff, 0 -2px #fff,
                1px 1px #fff, -1px -1px #fff, 1px -1px #fff, -1px 1px #fff;
+}
+
+.card-size {
+
 }

@@ -147,7 +147,21 @@
     border: 0.5px solid #0065e2;
 }
 
+.card-battlefield-position-player-highlighted {
+    border: 5px solid yellow;
+}
+
 .enemy-card {
+    transform: rotate(180deg) scale(0.5);
+    transform-origin: center;
+    padding-right: 12px;
+    position: relative;
+    left: 32px;
+    top: 42px;
+}
+
+.enemy-card-highlight {
+    background-color: yellow;
     transform: rotate(180deg) scale(0.5);
     transform-origin: center;
     padding-right: 12px;
@@ -238,4 +252,37 @@
 .slds-modal__content p {
     font-size: 18px;
     text-align: center;
+}
+
+.chat-container {
+    width: 300px;
+    height: 500px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    background-color: #fff;
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    right: 0;
+    top: 390px;
+}
+
+.messages {
+    flex: 1;
+    padding: 10px;
+    overflow-y: auto; /* Permite rolar as mensagens */
+    border-bottom: 1px solid #ddd;
+}
+
+.message {
+    margin-bottom: 10px;
+    padding: 5px;
+    border-radius: 5px;
+    background-color: #e1e1e1;
+}
+
+.username {
+    font-weight: bold;
+    color: #333;
 }

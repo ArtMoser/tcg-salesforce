@@ -3,6 +3,8 @@ import { LightningElement, api, track } from 'lwc';
 export default class CardRender extends LightningElement {
     @api cardData = {};
     @api hideCard = false;
+    @api isHighlighted = false;
+    @api isSelected = false;
 
     @track attack = 0;
     @track defense = 0;
@@ -31,5 +33,18 @@ export default class CardRender extends LightningElement {
 
     get getBackgroundColor() {
         return `background-color:${this.backgroundColor}`;
+    }
+
+    get getBackgroundSelected() {
+        if(this.isSelected) {
+            return `background-color:blue`;
+        }
+
+        if(this.isHighlighted) {
+            return `background-color:yellow`;
+        } else {
+            return `background: #171314;`;
+        }
+        
     }
 }

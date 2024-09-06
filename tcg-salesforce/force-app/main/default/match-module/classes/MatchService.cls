@@ -11,7 +11,6 @@ public with sharing class MatchService {
         }
 
         Set<String> idsPlayerAndMatch = this.repository.getBattleFieldRowsPerPlayerAndMatch(matchesIds);
-
         List<MatchFactory.PlayerMatch> playersPerMatch = this.match.getPlayersPerMatch(newMatches, oldMatches);
         List<BattlefieldRow__c> battlefieldRows = this.match.generateBattlefieldRows(playersPerMatch, matchesIds);
         insert battlefieldRows;
@@ -30,11 +29,29 @@ public with sharing class MatchService {
         }
     }
 
+    public void updateStatusToOngoing(List<Match__c> newMatches) {
+        for(Match__c match : newMatches) {
+            if(match.PlayerOne__c != null && match.PlayerTwo__c != null) {
+                match.Status__c = 'Ongoing';
+                Integer startingPlayer = this.util.getRandomPlayerByNumber();
+    
+                if(startingPlayer == 1) {
+                    match.StartingMatchPlayer__c = 'Player One';
+                    match.PlayerTurn__c = 'Player One';
+                    continue;
+                }
+                
+                match.StartingMatchPlayer__c = 'Player Two';
+                match.PlayerTurn__c = 'Player Two';
+            }
+        }
+    }
+
     public void updateStatusToOngoing(List<Match__c> newMatches, Map<Id, Match__c> oldMatches) {
         for(Match__c match : newMatches) {
             Match__c oldMatch = oldMatches.get(match.Id);
 
-            if(match.Status__c == 'Waiting' && match.PlayerTwo__c != null && oldMatch.PlayerTwo__c == null) {
+            if(match.Status__c == 'Waiting' && (match.PlayerTwo__c != null && match.PlayerOne__c != null)) {
                 match.Status__c = 'Ongoing';
             }
 
@@ -61,11 +78,13 @@ public with sharing class MatchService {
         Set<Id> matchesIdToPrepareCards = new Set<Id>();
 
         for(Match__c match : newMatches) {
-            Match__c oldMatch = oldMatches.get(match.Id);
-
-            if(match.Status__c == 'Ongoing' && oldMatch.Status__c == 'Waiting') {
+            if(match.PlayerOne__c != null && match.PlayerTwo__c != null && !match.GeneratePlayersHands__c) {
                 matchesIdToPrepareCards.add(match.Id);
             }
+
+            /*if((match.Status__c == 'Ongoing' && oldMatch.Status__c == 'Waiting') || (match.PlayerOne__c != null && match.PlayerTwo__c != null)) {
+                matchesIdToPrepareCards.add(match.Id);
+            }*/
         }
 
         if(matchesIdToPrepareCards.isEmpty()) { return; }
@@ -79,6 +98,12 @@ public with sharing class MatchService {
 
             this.match.shufflePlayersDeck(playersDecksIds);
         }
+
+        List<Match__c> matchesUpdate = new List<Match__c>();
+        for(Id idMatch : matchesIdToPrepareCards) {
+            matchesUpdate.add(new Match__c(Id = idMatch, GeneratePlayersHands__c = true));
+        }
+        update matchesUpdate;
     }
 
     public void setDeckCardsAsNotUsed(List<Match__c> newMatches) {
@@ -104,8 +129,8 @@ public with sharing class MatchService {
                 continue;
             }
 
-            if(match.LifePointsPlayerOne__c <= 0) {
-                match.Winner__c = match.PlayerTwo__c;
+            if(match.LifePointsPlayerTwo__c <= 0) {
+                match.Winner__c = match.PlayerOne__c;
                 //match.Status__c = 'Finished';
                 continue;
             }

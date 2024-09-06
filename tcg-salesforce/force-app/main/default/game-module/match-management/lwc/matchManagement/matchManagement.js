@@ -43,6 +43,11 @@ export default class MatchManagement extends LightningElement {
     @track isWinner = false;
     @track disableButton = false;
     @track cardsThatActed = [];
+    @track matchLog = [];
+
+    @track hightlightEnergyRow = false;
+    @track hightlightCreatureRow = false;
+    @track hightlightEnemyCreatureRow = false;
 
     channelName = '/event/MatchUpdate__e';
 
@@ -79,6 +84,11 @@ export default class MatchManagement extends LightningElement {
         this.match = matchData.match;
         this.player = matchData.player;
         this.playerDeckCards = matchData.deckCards;
+
+        for(let playerCardHand of matchData.playersHands) {
+            playerCardHand.isSelected = false;
+        }
+
         this.playersHands = matchData.playersHands;
         this.rowCards = matchData.rowCards;
         this.matchCemetery = matchData.matchCemetery;
@@ -108,7 +118,7 @@ export default class MatchManagement extends LightningElement {
 
         this.selectedDeckCardId= '';
         this.selectedActDeckCardId = '';
-
+        this.removeAllHightlights();
         this.setPlayerCards();
         this.setPlayersRowCards();
 
@@ -127,7 +137,40 @@ export default class MatchManagement extends LightningElement {
                 this.isWinner = true;
             }
         }
-        //TODO: When a card is clicked, highlighted it and the spaces on field that it's possible to set
+
+        this.generateMatchLog();
+    }
+
+    generateMatchLog() {
+        let logList = [];
+        let matchEvents = this.match.MatchEvents__c.replace('null','');
+        let messages = matchEvents.split('|');
+
+        let counter = 0;
+        for(let message of messages) {
+            let eventSplitted = message.split(':');
+
+            if(eventSplitted[0] == '') { continue; }
+            if(eventSplitted.length == 2) {
+                let userEvent = message.split(':')[0];
+                let event = message.split(':')[1];
+                let eventRecord = {
+                    userEvent: userEvent,
+                    event: event,
+                    key: counter
+                }
+                logList.push(eventRecord);
+            }  else {
+                let eventRecord = {
+                    userEvent: eventSplitted[0],
+                    key: counter
+                }
+                logList.push(eventRecord);
+            }
+            counter++
+        }
+
+        this.matchLog = logList.reverse();
     }
 
     setPlayerCards() {
@@ -244,7 +287,6 @@ export default class MatchManagement extends LightningElement {
                 rowCard.isSelected = true;
 
                 if(!this.selectedActDeckCardId) {
-                    this.showToast('Select which card will attack this one');
                     break;
                 }
                 
@@ -270,18 +312,20 @@ export default class MatchManagement extends LightningElement {
                     }
 
                     if(this.selectedActDeckCardId == deckCardId) {
-                        this.selectedDeckCardId = '';
+                        this.selectedActDeckCardId = '';
                         rowCard.isSelected = false;
+                        this.hightlightEnemyCreatureRow = true;
                         break;
                     }
 
                     this.selectedActDeckCardId = deckCardId;
                     rowCard.isSelected = true;
 
-                    if(this.selectedTargetCard) {
+                    this.hightlightEnemyCreatureRow = true;
+                    /*if(this.selectedTargetCard) {
                         this.performAttackToMonster();
                         break;
-                    }
+                    }*/
 
                     this.checkEnableDirectAttack();
                     break;
@@ -395,12 +439,39 @@ export default class MatchManagement extends LightningElement {
         let energyCost = event.currentTarget.dataset.energy;
         let type = event.currentTarget.dataset.type;
 
+        if(type == 'Monster') {
+            this.hightlightCreatureRow = true;
+            this.hightlightEnergyRow = false;
+        }
+
+        if(type == 'Energy') {
+            this.hightlightEnergyRow = true;
+            this.hightlightCreatureRow = false;
+        }
+
         if(type == 'Monster' && parseInt(energyCost) > this.availableEnergy) {
             this.showToast('You do not have enough energy to use this card');
+            for(let playerCard of this.actualPlayerHand) {
+                playerCard.isSelected = false;
+            }
             return;
         }
 
+        for(let playerCard of this.actualPlayerHand) {
+            if(event.currentTarget.dataset.id == this.selectedDeckCardId) {
+                playerCard.isSelected = false;
+            }
+        }
+
         this.selectedDeckCardId = event.currentTarget.dataset.id;
+
+        for(let playerCard of this.actualPlayerHand) {
+            if(playerCard.DeckCard__c == this.selectedDeckCardId) {
+                playerCard.isSelected = true;
+            } else {
+                playerCard.isSelected = false;
+            }
+        }
     }
 
     setCardOnEffectSpot(event) {
@@ -498,5 +569,19 @@ export default class MatchManagement extends LightningElement {
             message: messageValue,
         });
         this.dispatchEvent(event);
+    }
+
+    removeAllHightlights() {
+        this.hightlightEnergyRow = false;
+        this.hightlightCreatureRow = false;
+        this.hightlightEnemyCreatureRow = false;
+    }
+
+    get getPlayerFieldEnnergyRowClass() {
+        return this.hightlightEnergyRow ? 'card-battlefield-position card-battlefield-position-player-highlighted' : 'card-battlefield-position card-battlefield-position-player';
+    }
+
+    get getPlayerFieldCreatureRowClass() {
+        return this.hightlightCreatureRow ? 'card-battlefield-position card-battlefield-position-player-highlighted' : 'card-battlefield-position card-battlefield-position-player';
     }
 }
