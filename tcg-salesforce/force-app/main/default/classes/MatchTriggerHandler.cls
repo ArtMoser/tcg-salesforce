@@ -16,7 +16,7 @@ public with sharing class MatchTriggerHandler extends TriggerHandlerAbstract {
         if(!Trigger.isAfter || !Trigger.isInsert) { return; }
         service.generateMatchRows(Trigger.new, (Map<Id, Match__c>) Trigger.oldMap);
         service.setDeckCardsAsNotUsed(Trigger.new);
-        service.preparePlayersCards(Trigger.new, (Map<Id, Match__c>) Trigger.oldMap);
+        //service.preparePlayersCards(Trigger.new, (Map<Id, Match__c>) Trigger.oldMap);
     }
 
     public override void runAfterUpdate() {

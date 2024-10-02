@@ -8,14 +8,14 @@
 		<members>*</members>
 		<name>CustomObject</name>
 	</types>
-	<!--<types>
+	<types>
 		<members>*</members>
 		<name>CompactLayout</name>
 	</types>
 	<types>
 		<members>*</members>
 		<name>Layout</name>
-	</types>-->
+	</types>
 	<types>
 		<members>*</members>
 		<name>ApexClass</name>
@@ -41,7 +41,10 @@
 		<name>PermissionSet</name>
 	</types>
 	<types>
-		<members>Contact</members>
+		<members>*</members>
+		<name>CustomField</name>
+	</types>
+	<types>
 		<members>Card__c</members>
 		<members>Deck__c</members>
 		<members>Match__c</members>

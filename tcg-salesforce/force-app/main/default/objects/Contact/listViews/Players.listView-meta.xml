@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Players</fullName>
+    <columns>FULL_NAME</columns>
+    <columns>CONTACT.EMAIL</columns>
+    <columns>LoginCode__c</columns>
+    <filterScope>Everything</filterScope>
+    <filters>
+        <field>LoginCode__c</field>
+        <operation>notEqual</operation>
+    </filters>
+    <label>Players</label>
+</ListView>
