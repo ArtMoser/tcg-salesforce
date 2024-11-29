@@ -1,10 +1,11 @@
-public with sharing class MatchManagementController {
+public without sharing class MatchManagementController {
 
     @AuraEnabled
     public static MatchManagementFactory.MatchData getAllMatchData(String playerLoginCode, String matchId) {
         MatchManagementFactory.MatchData matchData = new MatchManagementFactory.MatchData();
         matchData.player = MatchManagementService.getInstance().getPlayer(playerLoginCode);
 
+        System.debug('###### matchId => ' + matchId);
         if(matchId != null) {
             matchData.match = MatchManagementService.getInstance().getCurrentMatchById(matchId);
         } else {

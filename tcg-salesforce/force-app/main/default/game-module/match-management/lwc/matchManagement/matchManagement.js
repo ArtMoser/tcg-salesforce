@@ -12,7 +12,7 @@ import endTurn from '@salesforce/apex/MatchManagementController.endTurn';
 import finishMatch from '@salesforce/apex/MatchManagementController.finishMatch';
 
 export default class MatchManagement extends LightningElement {
-    @api playerLoginCode = '123';
+    @api playerLoginCode = '';
     @track player = {};
     @track match = {};
     @track playerDeckCards = [];

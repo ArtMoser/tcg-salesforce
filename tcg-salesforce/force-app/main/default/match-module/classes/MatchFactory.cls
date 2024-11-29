@@ -42,11 +42,12 @@ public with sharing class MatchFactory {
     public List<BattlefieldRow__c> generateBattlefieldRows(PlayerMatch playerPerMatch) {
         List<BattlefieldRow__c> battleFieldRowsGanerated = new List<BattlefieldRow__c>();
 
-        Map<Decimal, RowConfiguration__mdt> rowConfigurationByRowNumber = this.generateRowConfigurationByRowNumberMap();
+        Map<String, RowConfiguration__mdt> rowConfigurationByRowNumber = this.generateRowConfigurationByRowNumberMap();
         Rule__mdt ruleRowsPerPlayer = Rule__mdt.getInstance('RowsPerPlayer');
 
         for(Integer rowCounter = 1; rowCounter <= ruleRowsPerPlayer.NumberValue__c; rowCounter++) {
-            RowConfiguration__mdt rowConfiguration = rowConfigurationByRowNumber.get(rowCounter); 
+            RowConfiguration__mdt rowConfiguration = rowConfigurationByRowNumber.get(String.valueOf(rowCounter)+'.0'); 
+            
             battleFieldRowsGanerated.add(new BattlefieldRow__c(
                                                             Match__c = playerPerMatch.matchId,
                                                             Player__c = playerPerMatch.playerId,
@@ -70,12 +71,12 @@ public with sharing class MatchFactory {
         return rowsCardGenerated;
     }
 
-    public Map<Decimal, RowConfiguration__mdt> generateRowConfigurationByRowNumberMap() {
-        Map<Decimal, RowConfiguration__mdt> rowConfigurationByRowNumber = new Map<Decimal, RowConfiguration__mdt>();
+    public Map<String, RowConfiguration__mdt> generateRowConfigurationByRowNumberMap() {
+        Map<String, RowConfiguration__mdt> rowConfigurationByRowNumber = new Map<String, RowConfiguration__mdt>();
         Map<String, RowConfiguration__mdt> rowConfigurations = RowConfiguration__mdt.getAll();
 
         for(RowConfiguration__mdt rowConfiguration : rowConfigurations.values()) {
-            rowConfigurationByRowNumber.put(rowConfiguration.RowNumber__c, rowConfiguration);
+            rowConfigurationByRowNumber.put(String.valueOf(rowConfiguration.RowNumber__c), rowConfiguration);
         }
 
         return rowConfigurationByRowNumber;

@@ -52,6 +52,7 @@ public with sharing class MatchService {
             Match__c oldMatch = oldMatches.get(match.Id);
 
             if(match.Status__c == 'Waiting' && (match.PlayerTwo__c != null && match.PlayerOne__c != null)) {
+                System.debug('###### Will update to Ongoing');
                 match.Status__c = 'Ongoing';
             }
 

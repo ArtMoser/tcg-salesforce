@@ -103,11 +103,11 @@ body* > {
     box-sizing: border-box;
     box-shadow: 7px 10px 5px 0px rgba(0, 0, 0, 0.75);
     text-align: left;
-    text-shadow: 
+    /*text-shadow: 
         -1px -1px 0 #fff,
         1px -1px 0 #fff, 
         -1px 1px 0 #fff, 
-        1px 1px 0 #fff;  
+        1px 1px 0 #fff; */
     transition: box-shadow 0.3s ease-in-out;
 }
 
@@ -321,6 +321,8 @@ p {
     text-align: center;
     background-color: #171314;
     border: 3px ridge #fff;
+    color: #fff;
+    font-weight: bolder;
 }
 
 
